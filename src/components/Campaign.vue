@@ -1,7 +1,7 @@
 <template>
   <div class="campaign">
     <div>
-      <div>{{ campaign.id }}</div>
+      <div>ID: {{ campaign.id }}</div>
       <div>Начало: {{ campaign.start_at }}</div>
       <div>Завершение: {{ campaign.finish_at }}</div>
       <div>Текст: {{ campaign.text }}</div>

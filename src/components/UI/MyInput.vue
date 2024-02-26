@@ -1,5 +1,10 @@
 <template>
-  <input v-bind:value="modelValue" v-on:input="updateInput" class="input" type="text">
+  <input
+      v-bind:value="modelValue"
+      v-on:input="updateInput"
+      class="input"
+      type="text"
+  >
 </template>
 
 <script>
@@ -18,7 +23,7 @@ export default {
 
 <style scoped>
 .input {
-  width: 50%;
+  width: 40%;
   border: 2px solid darkseagreen;
 }
 </style>

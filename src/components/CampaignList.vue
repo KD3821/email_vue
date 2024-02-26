@@ -1,8 +1,8 @@
 <template>
   <div v-if="campaigns.length > 0">
-    <h2>Список рассылок:</h2>
-    <div name="campaign-list">
-      <campaign
+    <h2>Всего рассылок: {{ count }}</h2>
+    <div class="campaign-list">
+      <Campaign
           v-for="campaign in campaigns"
           v-bind:campaign="campaign"
           v-bind:key="campaign.id"
@@ -24,7 +24,8 @@ export default {
     campaigns: {
       type: Array,
       required: true
-    }
+    },
+    count: 0
   }
 }
 </script>
