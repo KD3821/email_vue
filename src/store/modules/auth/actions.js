@@ -102,7 +102,7 @@ export default {
             if (e.response !== undefined) {
                 throw LoginValidations.getErrorMessageDetail(e.response.data);
             } else {
-                console.log(e.response);
+                await router.replace('/error');
             }
         }
     },

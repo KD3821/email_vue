@@ -15,7 +15,8 @@ const routes = [
     },
     {
         path: '/error',
-        component: ErrorPage
+        component: ErrorPage,
+        meta: { loggedIn: true }
     },
     {
         path: '/register',

@@ -23,8 +23,8 @@ import axiosInstance from "@/services/AxiosTokenInstance";
 import CampaignList from "@/components/CampaignList";
 import MyInput from "@/components/UI/MyInput";
 import MyButton from "@/components/UI/MyButton";
-import {mapActions} from "vuex";
-import {REFRESH_ACTION} from "@/store/storeConstants";
+import { mapActions } from "vuex";
+import { REFRESH_ACTION } from "@/store/storeConstants";
 export default {
   components: {
     CampaignList,
