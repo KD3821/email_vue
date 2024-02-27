@@ -1,6 +1,6 @@
 import Validations from "@/services/Validatations";
 
-class SigninValidations {
+class LoginValidations {
     constructor(email, password) {
         this.email = email;
         this.password = password;
@@ -16,6 +16,13 @@ class SigninValidations {
         }
         return errors;
     }
+    static getErrorMessageDetail(detail) {
+        let errorMsg = [];
+        for (let key in detail) {
+            errorMsg.push(`${key} - ${detail[key]}`)
+        }
+        return errorMsg.length > 1 ? errorMsg.join(' ') : errorMsg[0];
+    }
 }
 
-export default SigninValidations;
+export default LoginValidations;

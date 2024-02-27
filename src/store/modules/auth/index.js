@@ -6,7 +6,10 @@ export default {
     namespaced: true,
     state() {
         return {
-            username: 'Denis Borisov',
+            email: '',
+            username: '',
+            accessToken: '',
+            refreshToken: '',
         };
     },
     mutations,

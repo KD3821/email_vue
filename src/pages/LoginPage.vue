@@ -1,7 +1,7 @@
 <template>
   <div>
-    <form v-on:submit.prevent="onLogin()">
-      <h4>Войти в ЛК {{ username }}</h4>
+    <form v-on:submit.prevent>
+      <h4>Войти в ЛК</h4>
       <my-input
           v-bind:value="email"
           v-on:input="email = $event.target.value.trim()"
@@ -22,19 +22,26 @@
       </div>
       <my-button
           class="btn"
-          v-on:click="loginUser"
+          v-on:click="onLogin"
       >
         Войти
       </my-button>
+      <div
+          v-if="error"
+          class="error"
+      >
+        {{ error }}
+      </div>
     </form>
   </div>
 </template>
 
 <script>
-// import { mapState } from 'vuex';
+import { mapActions } from "vuex";
 import MyButton from "@/components/UI/MyButton"
 import MyInput from "@/components/UI/MyInput";
-import SigninValidations from "@/services/SigninValidations";
+import LoginValidations from "@/services/LoginValidations";
+import {LOGIN_ACTION} from "@/store/storeConstants";
 export default {
   components: {
     MyInput,
@@ -44,20 +51,30 @@ export default {
     return {
       email: '',
       password: '',
-      errors: []
+      errors: {},
+      error: ''
     }
   },
   methods: {
+    ...mapActions('auth', {
+      login: LOGIN_ACTION
+    }),
     onLogin() {
       // check the validations
-      let validations = new SigninValidations(
+      let validations = new LoginValidations(
           this.email,
           this.password
       );
       this.errors = validations.checkLoginValidations();
-      if (!this.errors.length) {
+      if ('email' in this.errors || 'password' in this.errors) {
         return false;
       }
+      this.login({
+        email: this.email,
+        password: this.password
+      }).catch(error => {
+        this.error = error
+      });
     }
   },
   // computed: {

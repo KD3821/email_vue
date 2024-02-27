@@ -23,6 +23,14 @@ class SignupValidations {
         }
         return errors;
     }
+
+    static getErrorMessageDetail(detail) {
+        let errorMsg = [];
+        for (let key in detail) {
+            errorMsg.push(`${key} - ${detail[key]}`)
+        }
+        return errorMsg.length > 1 ? errorMsg.join(' ') : errorMsg[0];
+    }
 }
 
 export default SignupValidations;

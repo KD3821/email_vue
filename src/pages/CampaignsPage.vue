@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h2>Страница с рассылками</h2>
-    <div class="dock_btns">
+    <h2>Рассылки</h2>
+    <div class="dock__btns">
       <my-input
           v-bind:value="searchQuery"
           v-on:input="searchQuery = $event.target.value"
@@ -19,10 +19,12 @@
 </template>
 
 <script>
-import axios from "axios";
+import axiosInstance from "@/services/AxiosTokenInstance";
 import CampaignList from "@/components/CampaignList";
 import MyInput from "@/components/UI/MyInput";
 import MyButton from "@/components/UI/MyButton";
+import {mapActions} from "vuex";
+import {REFRESH_ACTION} from "@/store/storeConstants";
 export default {
   components: {
     CampaignList,
@@ -37,13 +39,24 @@ export default {
     }
   },
   methods: {
+    ...mapActions('auth', {
+      refresh: REFRESH_ACTION
+    }),
     async fetchCampaigns() {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/campaigns/');
-        this.campaigns = response.data.results;
-        this.count = response.data.count;
-      } catch (e) {
-        alert('Сервис не доступен. Повторите запрос.')
+      for (let i = 0; i < 2; i++) {
+        try {
+          await axiosInstance.get('http://127.0.0.1:8000/api/campaigns/').then((response) => {
+            this.campaigns = response.data.results;
+            this.count = response.data.count;
+          });
+          break
+        } catch (e) {
+          if (e.response.status === 401) {
+            if (i === 0) {
+              await this.refresh()  // need refactor - Unknown promise rejection reason
+            }
+          }
+        }
       }
     }
   },
@@ -62,7 +75,7 @@ export default {
 </script>
 
 <style scoped>
-.dock_btns {
+.dock__btns {
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -1,6 +1,7 @@
 <template>
   <div>
     <form v-on:submit.prevent>
+      <div v-if="welcome">{{ welcome }}</div>
       <h4>Регистрация</h4>
       <my-input
           v-bind:value="username"
@@ -35,6 +36,12 @@
       >
         Зарегистрироваться
       </my-button>
+      <div
+          v-if="error"
+          class="error"
+      >
+        {{ error }}
+      </div>
     </form>
   </div>
 </template>
@@ -55,7 +62,9 @@ export default {
       username: '',
       email: '',
       password: '',
-      errors: []
+      errors: {},
+      error: '',
+      welcome: ''
     }
   },
   methods: {
@@ -70,13 +79,15 @@ export default {
           this.password
       );
       this.errors = validations.checkRegisterValidations();
-      if (this.errors.length > 0) {
+      if ('username' in this.errors || 'email' in this.errors || 'password' in this.errors) {
         return false;
       }
       this.signup({
         username: this.username,
         email: this.email,
         password: this.password
+      }).catch(error => {
+        this.error = error
       });
     }
   }

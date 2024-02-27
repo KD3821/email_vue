@@ -7,9 +7,13 @@
 
 <script>
 import Navbar from "@/components/Navbar";
+import { AUTO_AUTH_ACTION } from "@/store/storeConstants";
 export default {
   components: {
     Navbar
+  },
+  created() {
+    this.$store.dispatch(`auth/${AUTO_AUTH_ACTION}`);
   }
 }
 
