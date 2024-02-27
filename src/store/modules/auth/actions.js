@@ -60,9 +60,9 @@ export default {
             }
         } catch (e) {
             if (e.response !== undefined) {
-                throw SignupValidations.getErrorMessageDetail(e.response.data.errors);
+                await context.dispatch(LOGOUT_ACTION);
+                throw e;
             }
-            await router.push('/logout');
         }
     },
     async [AUTO_AUTH_ACTION](context) {

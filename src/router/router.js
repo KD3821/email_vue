@@ -3,7 +3,8 @@ import Home from "@/pages/Home";
 import CampaignsPage from "@/pages/CampaignsPage";
 import CustomersPage from "@/pages/CustomersPage";
 import LoginPage from "@/pages/LoginPage";
-import RegisterPage from "@/pages/RegisterPage"
+import RegisterPage from "@/pages/RegisterPage";
+import ErrorPage from "@/pages/ErrorPage";
 import store from "@/store/store";
 import { IS_USER_AUTHENTICATED_GETTER } from "@/store/storeConstants";
 
@@ -11,6 +12,10 @@ const routes = [
     {
         path: '/',
         component: Home
+    },
+    {
+        path: '/error',
+        component: ErrorPage
     },
     {
         path: '/register',

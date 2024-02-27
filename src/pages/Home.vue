@@ -1,15 +1,12 @@
 <template>
   <div class="main">
     <h2>Добро пожаловать в сервис рассылок!</h2>
-    <div>
-      Используя сервис, Вы можете:
-      <ul>
-        <li>Добавить клиента</li>
-        <li>Создать рассылку</li>
-        <li>Получить отчет по рассылке</li>
-      </ul>
-
-    </div>
+    <b>Используя сервис, Вы можете:</b>
+    <ul>
+      <li>Добавить клиента</li>
+      <li>Создать рассылку</li>
+      <li>Получить отчет по рассылке</li>
+    </ul>
   </div>
 </template>
 
@@ -19,7 +16,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .main {
   display: flex;
   flex-direction: column;

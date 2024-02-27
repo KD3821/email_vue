@@ -35,40 +35,51 @@ export default {
     return {
       campaigns: [],
       count: 0,
-      searchQuery: ''
+      searchQuery: '',
+      isRefreshed: false
     }
   },
   methods: {
     ...mapActions('auth', {
-      refresh: REFRESH_ACTION
+      getRefresh: REFRESH_ACTION
     }),
     async fetchCampaigns() {
-      for (let i = 0; i < 2; i++) {
-        try {
-          await axiosInstance.get('http://127.0.0.1:8000/api/campaigns/').then((response) => {
-            this.campaigns = response.data.results;
-            this.count = response.data.count;
-          });
-          break
-        } catch (e) {
-          if (e.response.status === 401) {
-            if (i === 0) {
-              await this.refresh()  // need refactor - Unknown promise rejection reason
-            }
+      try {
+        await axiosInstance.get('http://127.0.0.1:8000/api/campaigns/').then((response) => {
+          this.campaigns = response.data.results;
+          this.count = response.data.count;
+          this.isRefreshed = false;
+        });
+      } catch (e) {
+        if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
+          try {
+            await this.getRefresh()
+            this.isRefreshed = true;
+          } catch (err) {
+            this.$router.replace('/login');
           }
+        } else {
+          this.$router.replace('/error');
         }
       }
+    },
+    async runFetchCampaigns() {
+      do {
+        await this.fetchCampaigns()
+      } while (this.isRefreshed)
     }
   },
   mounted() {
-    this.fetchCampaigns();
+    this.runFetchCampaigns();
   },
   computed: {
     resultCampaigns(){
       return this.campaigns
     },
     searchedCampaigns(){
-      return this.resultCampaigns.filter(campaign => campaign.text.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      return this.resultCampaigns.filter((campaign) => {
+        return campaign.text.toLowerCase().includes(this.searchQuery.toLowerCase())
+      });
     }
   }
 }

@@ -18,8 +18,12 @@ class LoginValidations {
     }
     static getErrorMessageDetail(detail) {
         let errorMsg = [];
-        for (let key in detail) {
-            errorMsg.push(`${key} - ${detail[key]}`)
+        if (typeof detail == "object") {
+            for (let key in detail) {
+                errorMsg.push(`${detail[key]}`)
+            }
+        } else if (typeof detail == "string") {
+            errorMsg.push(detail)
         }
         return errorMsg.length > 1 ? errorMsg.join(' ') : errorMsg[0];
     }
