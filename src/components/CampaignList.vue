@@ -10,9 +10,7 @@
     </div>
   </div>
   <div v-else>
-    <h2>
-      Нет данных...
-    </h2>
+    <h2>Нет данных ...</h2>
   </div>
 </template>
 
@@ -31,5 +29,9 @@ export default {
 </script>
 
 <style scoped>
-
+.campaign-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 </style>

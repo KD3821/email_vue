@@ -6,8 +6,9 @@
       <div>Завершение: {{ campaign.finish_at }}</div>
       <div>Текст: {{ campaign.text }}</div>
       <div>Параметры: {{ campaign.params }}</div>
+      <div>Статус: {{ campaign.status }}</div>
     </div>
-    <div class="campaign_btns">
+    <div class="campaign__bttns">
       <my-button
           v-on:click="$router.push(`/campaigns/${campaign.id}`)"
       >
@@ -39,11 +40,14 @@ export default {
 .campaign {
   border: 3px solid dodgerblue;
   margin: 15px;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: seashell;
 }
-.campaign_btns {
-  display: flex;
+.campaign__bttns {
+  display: inline;
+  margin-left: 50px;
 }
 </style>

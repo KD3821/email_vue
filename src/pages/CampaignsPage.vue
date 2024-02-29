@@ -1,11 +1,11 @@
 <template>
   <div>
     <h2>Рассылки</h2>
-    <div class="dock__btns">
+    <div class="dock__bttns">
       <my-input
           v-bind:value="searchQuery"
           v-on:input="searchQuery = $event.target.value"
-          placeholder="Поиск..."
+          placeholder="Найти рассылку ..."
       ></my-input>
       <my-button v-on:click="$router.push('/campaigns/add')">
         Создать рассылку
@@ -53,7 +53,7 @@ export default {
       } catch (e) {
         if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
           try {
-            await this.getRefresh()
+            await this.getRefresh();
             this.isRefreshed = true;
           } catch (err) {
             this.$router.replace('/login');
@@ -65,19 +65,16 @@ export default {
     },
     async runFetchCampaigns() {
       do {
-        await this.fetchCampaigns()
+        await this.fetchCampaigns();
       } while (this.isRefreshed)
     }
   },
   mounted() {
     this.runFetchCampaigns();
-  },
+},
   computed: {
-    resultCampaigns(){
-      return this.campaigns
-    },
-    searchedCampaigns(){
-      return this.resultCampaigns.filter((campaign) => {
+    searchedCampaigns() {
+      return this.campaigns.filter((campaign) => {
         return campaign.text.toLowerCase().includes(this.searchQuery.toLowerCase())
       });
     }
@@ -85,10 +82,10 @@ export default {
 }
 </script>
 
-<style scoped>
-.dock__btns {
+<style>
+.dock__bttns {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
 }
 </style>

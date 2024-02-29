@@ -9,3 +9,4 @@ export const GET_USER_REFRESH_TOKEN_GETTER = '[getters] user refresh token';
 export const SET_USER_TOKEN_DATA_MUTATION = '[mutations] set user token data';
 export const GET_USER_ACCESS_TOKEN_GETTER = '[getters] user access token';
 export const IS_USER_AUTHENTICATED_GETTER = '[getters] user authenticated';
+export const GET_USER_NAME = '[getters] user name';

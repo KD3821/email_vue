@@ -2,6 +2,7 @@
   <div class="navbar">
     <div v-on:click="$router.push('/')" class="logo">MONKEY SERVICE</div>
     <div v-if="isAuthenticated" class="navbar__bttns">
+      <span id="user">Пользователь: {{ userName }}</span>
       <my-button v-on:click="$router.push('/campaigns')">Рассылки</my-button>
       <my-button v-on:click="$router.push('/customers')">Клиенты</my-button>
       <my-button v-on:click="onLogout">Выход</my-button>
@@ -15,13 +16,20 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { IS_USER_AUTHENTICATED_GETTER, LOGOUT_ACTION } from "@/store/storeConstants";
 import MyButton from "@/components/UI/MyButton";
+import {
+  IS_USER_AUTHENTICATED_GETTER,
+  GET_USER_NAME,
+  LOGOUT_ACTION
+} from "@/store/storeConstants";
 export default {
   components: { MyButton },
   computed: {
     ...mapGetters('auth', {
       isAuthenticated: IS_USER_AUTHENTICATED_GETTER
+    }),
+    ...mapGetters('auth', {
+      userName: GET_USER_NAME
     })
   },
   methods: {
@@ -38,7 +46,7 @@ export default {
 
 <style scoped>
 .navbar {
-  height: 30px;
+  min-height: 30px;
   background-color: dodgerblue;
   display: flex;
   align-items: center;
@@ -48,5 +56,9 @@ export default {
   margin-left: 20px;
   color: white;
   font-size: 1.2em;
+}
+#user {
+  color: white;
+  margin: 0 5px;
 }
 </style>
