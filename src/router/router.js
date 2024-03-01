@@ -7,6 +7,7 @@ import RegisterPage from "@/pages/RegisterPage";
 import ErrorPage from "@/pages/ErrorPage";
 import store from "@/store/store";
 import { IS_USER_AUTHENTICATED_GETTER } from "@/store/storeConstants";
+import AddCampaignPage from "@/pages/AddCampaignPage";
 
 const routes = [
     {
@@ -37,6 +38,11 @@ const routes = [
         path: '/campaigns',
         component: CampaignsPage,
         meta: { loggedIn: true }
+    },
+    {
+        path: '/campaigns/add',
+        component: AddCampaignPage,
+        meta: { loggedIn: true}
     }
 ]
 

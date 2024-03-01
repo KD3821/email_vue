@@ -14,4 +14,13 @@ export default class Validatations {
     static minLength(password, minLength) {
         return password.length >= minLength;
     }
+
+    static checkCampaignStartDate(startAt, finishAt) {
+        return finishAt > startAt;
+    }
+
+    static checkCampaignFinishDate(finishAt) {
+        let now = new Date()
+        return finishAt > now.toISOString();
+    }
 }

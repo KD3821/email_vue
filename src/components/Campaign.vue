@@ -5,7 +5,7 @@
       <div>Начало: {{ campaign.start_at }}</div>
       <div>Завершение: {{ campaign.finish_at }}</div>
       <div>Текст: {{ campaign.text }}</div>
-      <div>Параметры: {{ campaign.params }}</div>
+      <div>Фильтр: {{ campaign.params.tag }} {{ campaign.params.carrier }}</div>
       <div>Статус: {{ campaign.status }}</div>
     </div>
     <div class="campaign__bttns">

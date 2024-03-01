@@ -77,11 +77,6 @@ export default {
       });
     }
   },
-  // computed: {
-  //   ...mapState('auth', {
-  //     username: state => state.username
-  //   })
-  // }
 }
 </script>
 

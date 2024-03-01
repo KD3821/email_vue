@@ -2,8 +2,8 @@
   <input
       v-bind:value="modelValue"
       v-on:input="updateInput"
-      class="input"
       type="text"
+      class="my-input"
   >
 </template>
 
@@ -21,9 +21,13 @@ export default {
 }
 </script>
 
-<style scoped>
-.input {
+<style>
+.my-input {
   width: 40%;
   border: 2px solid darkseagreen;
+  margin-bottom: 5px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 </style>
