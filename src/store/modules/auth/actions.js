@@ -12,28 +12,32 @@ import {
     REFRESH_ACTION,
     SET_USER_TOKEN_DATA_MUTATION,
     GET_USER_REFRESH_TOKEN_GETTER,
+    LOADING_SPINNER_SHOW_MUTATION,
 } from "@/store/storeConstants";
 import store from "@/store/store";
 
 export default {
-    async [SIGNUP_ACTION](_, payload) {
+    async [SIGNUP_ACTION](context, payload) {
         let postData = {
             username: payload.username,
             email: payload.email,
             password: payload.password,
         };
+        context.commit(LOADING_SPINNER_SHOW_MUTATION, true, { root: true })
         try {
             let response = await axios.post('http://127.0.0.1:8000/api/accounts/register', postData);
             if (response.status === 201) {
                 await router.push('/login');
             }
         } catch (e) {
+            context.commit(LOADING_SPINNER_SHOW_MUTATION, false, { root: true })
             if (e.response !== undefined) {
                 throw SignupValidations.getErrorMessageDetail(e.response.data.errors);
             } else {
                 console.log(e.response);
             }
         }
+        context.commit(LOADING_SPINNER_SHOW_MUTATION, false, { root: true })
     },
     async [REFRESH_ACTION](context) {
         let refreshData = {

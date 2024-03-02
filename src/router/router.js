@@ -1,12 +1,14 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "@/pages/Home";
-import CampaignsPage from "@/pages/CampaignsPage";
-import CustomersPage from "@/pages/CustomersPage";
-import LoginPage from "@/pages/LoginPage";
-import RegisterPage from "@/pages/RegisterPage";
-import ErrorPage from "@/pages/ErrorPage";
 import store from "@/store/store";
+import { createRouter, createWebHistory } from "vue-router";
 import { IS_USER_AUTHENTICATED_GETTER } from "@/store/storeConstants";
+import Home from "@/pages/Home";
+import ErrorPage from "@/pages/ErrorPage";
+import RegisterPage from "@/pages/RegisterPage";
+import LoginPage from "@/pages/LoginPage";
+import CustomersPage from "@/pages/CustomersPage";
+import CampaignsPage from "@/pages/CampaignsPage";
+import CampaignDetailsPage from "@/pages/CampaignDeatailsPage";
+import CampaignCustomersPage from "@/pages/CampaignCustomersPage";
 import AddCampaignPage from "@/pages/AddCampaignPage";
 
 const routes = [
@@ -30,19 +32,31 @@ const routes = [
         meta: { loggedIn: false }
     },
     {
-        path: '/customers',
-        component: CustomersPage,
-        meta: { loggedIn: true }
-    },
-    {
         path: '/campaigns',
         component: CampaignsPage,
         meta: { loggedIn: true }
     },
     {
+        name: 'campaignDetails',
+        path: '/campaigns/:id',
+        component: CampaignDetailsPage,
+        meta: { loggedIn: true }
+    },
+    {
+        name: 'campaignCustomers',
+        path: '/campaigns/:id/customers',
+        component: CampaignCustomersPage,
+        meta: { loggedIn: true }
+    },
+    {
         path: '/campaigns/add',
         component: AddCampaignPage,
-        meta: { loggedIn: true}
+        meta: { loggedIn: true }
+    },
+    {
+        path: '/customers',
+        component: CustomersPage,
+        meta: { loggedIn: true }
     }
 ]
 
@@ -63,7 +77,7 @@ router.beforeEach((to, from, next) => {
         !to.meta.loggedIn &&
         store.getters[`auth/${IS_USER_AUTHENTICATED_GETTER}`]
     ) {
-        next('/campaigns');
+        next('/');
     } else {
         next();
     }

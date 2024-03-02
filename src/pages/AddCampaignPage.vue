@@ -57,10 +57,9 @@ import MyInput from "@/components/UI/MyInput";
 import MyButton from "@/components/UI/MyButton";
 import MySelect from "@/components/UI/MySelect";
 import axiosInstance from "@/services/AxiosTokenInstance";
-import CreateCampaignValidations from "@/services/CreateCampaignValidations";
 import { mapActions } from "vuex";
 import { REFRESH_ACTION } from "@/store/storeConstants";
-import SignupValidations from "@/services/SignupValidations";
+import CreateCampaignValidations from "@/services/CreateCampaignValidations";
 export default {
   components: {
     MyInput,
@@ -117,7 +116,7 @@ export default {
       try {
         await axiosInstance.post('http://127.0.0.1:8000/api/campaigns/', campaignData).then((response) => {
           if (response.status === 201) {
-            this.success = `ОК! Фильтр: ${this.tag} ${this.selectedCarrier}. Старт:${new Date(campaignData.start_at)}`
+            this.$router.replace('/campaigns');
           } else {
             this.failure = 'ОШИБКА. Проверьте правильность заполнения формы.'
           }

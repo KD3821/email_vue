@@ -6,10 +6,11 @@
           v-for="campaign in campaigns"
           v-bind:campaign="campaign"
           v-bind:key="campaign.id"
+          v-bind:detailedView="false"
       />
     </div>
   </div>
-  <div v-else>
+  <div v-show="showNoCampaigns">
     <h2>Нет данных ...</h2>
   </div>
 </template>
@@ -23,8 +24,12 @@ export default {
       type: Array,
       required: true
     },
+    showNoCampaigns: {
+      type: Boolean,
+      required: true
+    },
     count: 0
-  }
+  },
 }
 </script>
 

@@ -21,6 +21,7 @@
     <campaign-list
         v-bind:count
         v-bind:campaigns="sortedAndSearchedCampaigns"
+        v-bind:showNoCampaigns="showNoCampaigns"
     />
   </div>
 </template>
@@ -31,8 +32,11 @@ import CampaignList from "@/components/CampaignList";
 import MyInput from "@/components/UI/MyInput";
 import MyButton from "@/components/UI/MyButton";
 import MySelect from "@/components/UI/MySelect";
-import { mapActions } from "vuex";
-import { REFRESH_ACTION } from "@/store/storeConstants";
+import { mapActions, mapMutations } from "vuex";
+import {
+  REFRESH_ACTION,
+  LOADING_SPINNER_SHOW_MUTATION,
+} from "@/store/storeConstants";
 export default {
   components: {
     CampaignList,
@@ -47,6 +51,7 @@ export default {
       searchQuery: '',
       isRefreshed: false,
       selectedSort: '',
+      showNoCampaigns: false,
       sortOptions: [
         {value: 'text', name: 'По тексту сообщения'},
         {value: 'params', name: 'По мобильному оператору'},
@@ -58,12 +63,17 @@ export default {
     ...mapActions('auth', {
       getRefresh: REFRESH_ACTION
     }),
+    ...mapMutations({
+      showLoading: LOADING_SPINNER_SHOW_MUTATION
+    }),
     async fetchCampaigns() {
       try {
         await axiosInstance.get('http://127.0.0.1:8000/api/campaigns/').then((response) => {
+          this.showLoading(false);
           this.campaigns = response.data.results;
           this.count = response.data.count;
           this.isRefreshed = false;
+          this.showNoCampaigns = this.campaigns.length <= 0 // same this.campaigns.length > 0 ? false : true
         });
       } catch (e) {
         if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
@@ -72,13 +82,16 @@ export default {
             this.isRefreshed = true;
           } catch (err) {
             this.$router.replace('/login');
+            this.showLoading(false);
           }
         } else {
           this.$router.replace('/error');
+          this.showLoading(false);
         }
       }
     },
     async runFetchCampaigns() {
+      this.showLoading(true);
       do {
         await this.fetchCampaigns();
       } while (this.isRefreshed)

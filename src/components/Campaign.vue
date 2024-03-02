@@ -1,6 +1,6 @@
 <template>
   <div class="campaign">
-    <div>
+    <div v-if="campaign && campaign.id">
       <div>ID: {{ campaign.id }}</div>
       <div>Начало: {{ campaign.start_at }}</div>
       <div>Завершение: {{ campaign.finish_at }}</div>
@@ -8,14 +8,26 @@
       <div>Фильтр: {{ campaign.params.tag }} {{ campaign.params.carrier }}</div>
       <div>Статус: {{ campaign.status }}</div>
     </div>
-    <div class="campaign__bttns">
+    <div v-if="detailedView" class="camp_detailed__bttns">
       <my-button
-          v-on:click="$router.push(`/campaigns/${campaign.id}`)"
+          v-on:click="$router.push({ name: 'campaignDetails', params: { id: campaign.id }})"
+      >
+        Button1
+      </my-button>
+      <my-button
+          v-on:click="$router.push({ name: 'campaignCustomers', params: { id: campaign.id }})"
+      >
+        Button2
+      </my-button>
+    </div>
+    <div v-else class="camp_list__bttns">
+      <my-button
+          v-on:click="$router.push({ name: 'campaignDetails', params: { id: campaign.id }})"
       >
         Детали
       </my-button>
       <my-button
-          v-on:click="$router.push(`/campaign/${campaign.id}/customers`)"
+          v-on:click="$router.push({ name: 'campaignCustomers', params: { id: campaign.id }})"
       >
         Получатели
       </my-button>
@@ -30,6 +42,10 @@ export default {
   props: {
     campaign: {
       type: Object,
+      required: true
+    },
+    detailedView: {
+      type: Boolean,
       required: true
     }
   }
@@ -46,8 +62,14 @@ export default {
   justify-content: space-between;
   background-color: seashell;
 }
-.campaign__bttns {
+.camp_list__bttns {
   display: inline;
   margin-left: 50px;
+}
+.camp_detailed__bttns {
+  display: inline;
+  margin-left: 50px;
+  background-color: paleturquoise;
+  border: 1px solid grey;
 }
 </style>

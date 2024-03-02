@@ -37,11 +37,14 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import MyButton from "@/components/UI/MyButton"
 import MyInput from "@/components/UI/MyInput";
 import LoginValidations from "@/services/LoginValidations";
-import {LOGIN_ACTION} from "@/store/storeConstants";
+import {
+  LOGIN_ACTION,
+  LOADING_SPINNER_SHOW_MUTATION,
+} from "@/store/storeConstants";
 export default {
   components: {
     MyInput,
@@ -59,7 +62,10 @@ export default {
     ...mapActions('auth', {
       login: LOGIN_ACTION
     }),
-    onLogin() {
+    ...mapMutations({
+      showLoading: LOADING_SPINNER_SHOW_MUTATION
+    }),
+    async onLogin() {
       // check the validations
       let validations = new LoginValidations(
           this.email,
@@ -69,12 +75,15 @@ export default {
       if ('email' in this.errors || 'password' in this.errors) {
         return false;
       }
-      this.login({
+      this.showLoading(true);
+      await this.login({
         email: this.email,
         password: this.password
       }).catch(error => {
+        this.showLoading(false);
         this.error = error
       });
+      this.showLoading(false);
     }
   },
 }
