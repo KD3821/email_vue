@@ -6,7 +6,7 @@
           v-for="campaign in campaigns"
           v-bind:campaign="campaign"
           v-bind:key="campaign.id"
-          v-bind:detailedView="false"
+          v-bind:campaignDetailedView="false"
       />
     </div>
   </div>

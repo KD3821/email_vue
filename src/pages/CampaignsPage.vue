@@ -73,7 +73,7 @@ export default {
           this.campaigns = response.data.results;
           this.count = response.data.count;
           this.isRefreshed = false;
-          this.showNoCampaigns = this.campaigns.length <= 0 // same this.campaigns.length > 0 ? false : true
+          this.showNoCampaigns = this.campaigns.length <= 0; // same this.campaigns.length > 0 ? false : true
         });
       } catch (e) {
         if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {

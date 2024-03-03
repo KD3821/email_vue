@@ -1,13 +1,23 @@
 <template>
   <div class="customer">
-    <div>
-      <div>ID: {{ customer.id }}</div>
-      <div>Телефон: {{ customer.phone }}</div>
-      <div>Оператор: {{ customer.carrier }}</div>
-      <div>Тэг: {{ customer.tag }}</div>
-      <div>Часовой пояс: {{ customer.tz_name }}</div>
+    <div v-if="customerMessageView" class="message__view">
+      <table>
+        <tr>
+          <td>ID: {{ customer.id }}</td>
+          <td>Телефон: {{ customer.phone }}</td>
+          <td>Оператор: {{ customer.carrier }}</td>
+          <td>Тэг: {{ customer.tag }}</td>
+        </tr>
+      </table>
     </div>
-    <div class="customer__bttns">
+    <div v-else class="customer__view">
+      <div>
+        <div>ID: {{ customer.id }}</div>
+        <div>Телефон: {{ customer.phone }}</div>
+        <div>Оператор: {{ customer.carrier }}</div>
+        <div>Тэг: {{ customer.tag }}</div>
+        <div>Часовой пояс: {{ customer.tz_name }}</div>
+      </div>
       <my-button
         v-on:click="$router.push(`/customers/${customer.id}`)"
       >
@@ -30,6 +40,10 @@ export default {
     customer: {
       type: Object,
       required: true
+    },
+    customerMessageView: {
+      type: Boolean,
+      required: true
     }
   }
 }
@@ -45,8 +59,12 @@ export default {
   justify-content: space-between;
   background-color: lightcyan;
 }
-.customer__bttns {
+.customer__view {
   display: inline;
   margin-left: 50px;
+}
+.message__view {
+  display: flex;
+  justify-content: center;
 }
 </style>

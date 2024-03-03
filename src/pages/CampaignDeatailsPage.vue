@@ -3,7 +3,7 @@
     <h2>Детали рассылки:</h2>
     <Campaign
         v-bind:campaign="campaign"
-        detailedView
+        campaignDetailedView
     />
   </div>
 </template>
