@@ -3,7 +3,7 @@
     <div v-if="customerMessageView" class="message__view">
       <table>
         <tr>
-          <td>ID: {{ customer.id }}</td>
+          <td>Клиент ID: {{ customer.id }}</td>
           <td>Телефон: {{ customer.phone }}</td>
           <td>Оператор: {{ customer.carrier }}</td>
           <td>Тэг: {{ customer.tag }}</td>
@@ -42,8 +42,7 @@ export default {
       required: true
     },
     customerMessageView: {
-      type: Boolean,
-      required: true
+      type: Boolean
     }
   }
 }

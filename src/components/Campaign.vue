@@ -39,10 +39,11 @@
       v-for="message in messages"
       v-bind:message="message"
       v-bind:key="message.id"
+      v-bind:campaignStatus="campaign.status"
     />
   </div>
   <div v-show="showNoMessages">
-    <h2>Нет сообщений ...</h2>
+    <h2>Ожидает запуска ...</h2>
   </div>
 </template>
 

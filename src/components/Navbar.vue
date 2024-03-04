@@ -56,6 +56,7 @@ export default {
   margin-left: 20px;
   color: white;
   font-size: 1.2em;
+  cursor: pointer;
 }
 #user {
   color: white;

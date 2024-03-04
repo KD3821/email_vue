@@ -16,5 +16,6 @@ export default {
   border: 1px solid lightseagreen;
   color: darkred;
   margin: 10px;
+  cursor: pointer;
 }
 </style>
