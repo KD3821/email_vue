@@ -57,6 +57,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   background-color: lightcyan;
+  color: black;
 }
 .customer__view {
   display: inline;

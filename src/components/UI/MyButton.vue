@@ -13,7 +13,7 @@ export default {
 <style scoped>
 .btn {
   background: lightgray;
-  border: 1px solid lightseagreen;
+  border: 1px solid darkslategrey;
   color: darkred;
   margin: 10px;
   cursor: pointer;
