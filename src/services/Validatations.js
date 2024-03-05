@@ -23,4 +23,16 @@ export default class Validatations {
         let now = new Date()
         return finishAt > now.toISOString();
     }
+
+    static checkCustomerPhoneLength(phone) {
+        return phone.length === 11;
+    }
+
+    static checkCustomerPhoneDigit(phone) {
+        return /\d/.test(phone);
+    }
+
+    static checkCustomerTimeZone(timeZone) {
+        return timeZone.length > 2;
+    }
 }

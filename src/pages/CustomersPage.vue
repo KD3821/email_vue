@@ -5,9 +5,9 @@
       <my-input
         v-bind:value="searchQuery"
         v-on:input="searchQuery = $event.target.value"
-        placeholder="Найти клиента ..."
+        placeholder="Найти клиента по номеру телефона..."
       ></my-input>
-      <my-button>
+      <my-button v-on:click="this.$router.push('/customers/add')">
         Добавить клиента
       </my-button>
     </div>

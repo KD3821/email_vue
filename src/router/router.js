@@ -10,6 +10,7 @@ import CampaignsPage from "@/pages/CampaignsPage";
 import CampaignDetailsPage from "@/pages/CampaignDeatailsPage";
 import CampaignCustomersPage from "@/pages/CampaignCustomersPage";
 import AddCampaignPage from "@/pages/AddCampaignPage";
+import AddCustomerPage from "@/pages/AddCustomerPage";
 
 const routes = [
     {
@@ -56,6 +57,11 @@ const routes = [
     {
         path: '/customers',
         component: CustomersPage,
+        meta: { loggedIn: true }
+    },
+    {
+        path: '/customers/add',
+        component: AddCustomerPage,
         meta: { loggedIn: true }
     }
 ]

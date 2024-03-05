@@ -1,50 +1,33 @@
 <template>
   <div>
     <form v-on:submit.prevent class="add-item-form">
-      <p>Время запуска:</p>
+      <p>Номер телефона и мобильный оператор:</p>
       <my-input
-        v-bind:value="startTime"
-        v-on:input="startTime = $event.target.value"
-        type="time"
+          v-bind:value="phone"
+          v-on:input="phone = $event.target.value"
+          type="text"
       ></my-input>
-      <my-input
-        v-bind:value="startDate"
-        v-on:input="startDate = $event.target.value"
-        type="date"
-      ></my-input>
-      <p>Время остановки:</p>
-      <my-input
-          v-bind:value="finishTime"
-          v-on:input="finishTime = $event.target.value"
-          type="time"
-      ></my-input>
-      <my-input
-          v-bind:value="finishDate"
-          v-on:input="finishDate = $event.target.value"
-          type="date"
-      ></my-input>
-      <p>Фильтр:</p>
       <my-select
           v-bind:value="selectedCarrier"
           v-on:input="selectedCarrier = $event.target.value"
           v-bind:options="carrierOptions"
       />
+      <p>Тэг (опционально):</p>
       <my-input
           v-bind:value="tag"
           v-on:input="tag = $event.target.value"
           type="text"
-          placeholder="Тэг"
       ></my-input>
+      <p>Часовой пояс:</p>
       <my-input
-          v-bind:value="text"
-          v-on:input="text = $event.target.value"
+          v-bind:value="timeZone"
+          v-on:input="timeZone = $event.target.value"
           type="text"
-          placeholder="Текст рассылки"
       ></my-input>
       <my-button
-        v-on:click="runCreateCampaign"
+          v-on:click="runCreateCustomer"
       >
-        Создать рассылку
+        Создать клиента
       </my-button>
       <div v-if="success" class="success">{{ success }}</div>
       <div v-else class="failure">{{ failure }}</div>
@@ -57,8 +40,9 @@ import MyInput from "@/components/UI/MyInput";
 import MyButton from "@/components/UI/MyButton";
 import MySelect from "@/components/UI/MySelect";
 import axiosInstance from "@/services/AxiosTokenInstance";
-import { mapActions } from "vuex";
 import { REFRESH_ACTION } from "@/store/storeConstants";
+import { mapActions } from "vuex";
+import CreateCustomerValidations from "@/services/CreateCustomerValidations";
 import CreateCampaignValidations from "@/services/CreateCampaignValidations";
 export default {
   components: {
@@ -69,16 +53,13 @@ export default {
   data() {
     return {
       isRefreshed: false,
-      startTime: '',
-      startDate: '',
-      finishTime: '',
-      finishDate: '',
-      selectedCarrier: '',
+      phone: '',
+      selectedCarrier: {},
       tag: '',
-      text: '',
+      timeZone: '',
+      errors: {},
       success: '',
       failure: '',
-      errors: {},
       carrierOptions: [
         {value: 'mts', name: 'МТС'},
         {value: 'megafon', name: 'Мегафон'},
@@ -92,31 +73,28 @@ export default {
     ...mapActions('auth', {
       getRefresh: REFRESH_ACTION
     }),
-    async createCampaign() {
-      let campaignData = {
-        start_at: `${this.startDate}T${this.startTime}:00+03:00`,
-        finish_at: `${this.finishDate}T${this.finishTime}:00+03:00`,
-        text: this.text,
-        params: {
-          'tag': this.tag,
-          'carrier': this.selectedCarrier,
-        }
+    async createCustomer() {
+      let customerData = {
+        phone: this.phone,
+        carrier: this.selectedCarrier,
+        tag: this.tag,
+        tz_name: this.timeZone
       };
-      let validations = new CreateCampaignValidations(
-          campaignData.start_at,
-          campaignData.finish_at,
-          campaignData.text,
-          campaignData.params.carrier
+      let validations = new CreateCustomerValidations(
+          customerData.phone,
+          customerData.carrier,
+          customerData.tag,
+          customerData.tz_name
       );
-      this.errors = validations.checkCreateCampaignValidations()
-      if ('start' in this.errors || 'finish' in this.errors || 'text' in this.errors || 'carrier' in this.errors) {
+      this.errors = validations.checkCreateCustomerValidations()
+      if ('phone' in this.errors || 'timezone' in this.errors || 'carrier' in this.errors) {
         this.failure = CreateCampaignValidations.getErrorMessageDetail(this.errors);
         return false;
       }
       try {
-        await axiosInstance.post('http://127.0.0.1:8000/api/campaigns/', campaignData).then((response) => {
+        await axiosInstance.post('http://127.0.0.1:8000/api/customers/', customerData).then((response) => {
           if (response.status === 201) {
-            this.$router.replace('/campaigns');
+            this.$router.replace('/customers');
           } else {
             this.failure = 'ОШИБКА. Проверьте правильность заполнения формы.'
           }
@@ -130,35 +108,22 @@ export default {
             this.$router.replace('/login');
           }
         } else if (e.response.status === 400) {
-          this.failure = CreateCampaignValidations.getErrorMessageDetail(e.response.data);
+          this.failure = CreateCustomerValidations.getErrorMessageDetail(e.response.data);
           return false;
         } else {
           this.$router.replace('/error');
         }
       }
     },
-    async runCreateCampaign() {
+    async runCreateCustomer() {
       do {
-        await this.createCampaign();
-      } while (this.isRefreshed)
+        await this.createCustomer();
+      } while (this.isRefreshed);
     }
   }
 }
 </script>
 
-<style>
-.add-item-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 50px;
-}
-.success {
-  color: green;
-  font-size: 10pt;
-}
-.failure {
-  color: red;
-  font-size: 10pt;
-}
+<style scoped>
+
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="top_bttns">
+    <div class="top__bttns">
       <h2>Рассылки</h2>
       <my-button v-on:click="$router.push('/campaigns/add')">
         Создать рассылку
@@ -125,7 +125,7 @@ export default {
 </script>
 
 <style>
-.top_bttns {
+.top__bttns {
   display: flex;
   justify-content: space-between;
   align-items: center;

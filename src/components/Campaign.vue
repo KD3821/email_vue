@@ -2,23 +2,39 @@
   <div v-if="campaign && campaign.id" class="campaign">
     <div>
       <div>ID: {{ campaign.id }}</div>
-      <div>Начало: {{ campaign.start_at }}</div>
-      <div>Завершение: {{ campaign.finish_at }}</div>
+      <div>
+        Начало:
+        <MyDate v-bind:date="campaign.start_at"/>
+      </div>
+      <div>
+        Завершение:
+        <MyDate v-bind:date="campaign.finish_at"/>
+      </div>
       <div>Текст: {{ campaign.text }}</div>
       <div>Фильтр: {{ campaign.params.tag }} {{ campaign.params.carrier }}</div>
       <div>Статус: {{ campaign.status }}</div>
     </div>
     <div v-if="campaignDetailedView" class="detailed__view">
-      <my-button
-          v-on:click="$router.push({ name: 'campaignDetails', params: { id: campaign.id }})"
-      >
-        Button1
-      </my-button>
-      <my-button
-          v-on:click="$router.push({ name: 'campaignCustomers', params: { id: campaign.id }})"
-      >
-        Button2
-      </my-button>
+      <div class="stats__bttns">
+        <my-button
+            v-on:click="$router.push({ name: 'campaignDetails', params: { id: campaign.id }})"
+        >
+          Статистика рассылки
+        </my-button>
+        <my-button
+            v-on:click="$router.push({ name: 'campaignCustomers', params: { id: campaign.id }})"
+        >
+          Статистика всех рассылок
+        </my-button>
+      </div>
+      <div class="stats__view">
+        <div v-if="campaignStats">
+          Статистика по данной рассылке:
+        </div>
+        <div v-else>
+          Статистика по всем рассылкам:
+        </div>
+      </div>
     </div>
     <div v-else class="campaign__view">
       <my-button
@@ -50,6 +66,7 @@
 <script>
 import Message from "@/components/Message";
 import MyButton from "@/components/UI/MyButton";
+import MyDate from "@/components/UI/MyDate";
 import { mapActions, mapMutations } from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
 import {
@@ -58,6 +75,7 @@ import {
 } from "@/store/storeConstants";
 export default {
   components: {
+    MyDate,
     Message,
     MyButton
   },
@@ -77,7 +95,9 @@ export default {
       count: 0,
       campaignId: '',
       isRefreshed: false,
-      showNoMessages: false
+      showNoMessages: false,
+      campaignStats: {},
+      allCampaignsStats: {}
     }
   },
   methods: {
@@ -138,12 +158,17 @@ export default {
   background-color: seashell;
 }
 .campaign__view {
-  display: inline;
+  display: flex;
+  flex-direction: column;
   margin-left: 50px;
 }
 .detailed__view {
-  display: inline;
-  margin-left: 50px;
+  display: flex;
+  flex-direction: column;
+}
+.stats__bttns {
+  display: flex;
+  padding: 10px;
   background-color: paleturquoise;
   border: 1px solid grey;
 }

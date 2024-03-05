@@ -4,12 +4,19 @@
         v-bind:customer="message.customer"
         customerMessageView
     />
-    <div>Дата отправки: {{ message.sent_at }}</div>
+    <div>Дата отправления:<br>
+      <MyDate v-bind:date="message.sent_at"/>
+    </div>
     <div v-if="showCheckButton">
       Статус:
       <my-button v-on:click="checkMessageStatus">
-        Check
+        Узнать статус
       </my-button>
+      <div class="two__seconds">
+        <div v-show="twoSecondsStatus">
+          {{ messageStatus }}
+        </div>
+      </div>
     </div>
     <div v-else>
       Статус: {{ messageStatus }}
@@ -20,10 +27,12 @@
 <script>
 import Customer from "@/components/Customer";
 import MyButton from "@/components/UI/MyButton";
+import MyDate from "@/components/UI/MyDate";
 export default {
   components: {
     Customer,
-    MyButton
+    MyButton,
+    MyDate
   },
   props: {
     message: {
@@ -40,7 +49,8 @@ export default {
       messageSocket: {},
       messageStatus: '',
       messageStyle: 'message',
-      showCheckButton: false
+      showCheckButton: false,
+      twoSecondsStatus: false
     }
   },
   methods: {
@@ -54,8 +64,17 @@ export default {
       messageSocket.onmessage = (event) => {
         const received_data = JSON.parse(event.data);
         console.log('Received status:', received_data);
-        this.assignStyle(received_data.status);
-        this.showCheckButton = received_data.status === 'processing';
+        if (received_data.status === 'close' && received_data.code !== undefined) {
+          console.log(`closing WebSocket with code ${received_data.code}`);
+          this.messageSocket.close(received_data.code);
+        } else if (received_data.status === 'processing') {
+          this.showCheckButton = true;
+          this.twoSecondsStatus = true;
+          setTimeout(() => this.twoSecondsStatus = false, 2000);
+        } else {
+          this.assignStyle(received_data.status);
+          this.showCheckButton = false;
+        }
       };
     },
     async checkMessageStatus() {
@@ -68,29 +87,29 @@ export default {
     assignStyle(status) {
       switch(status) {
         case 'ok':
-          this.messageStatus = 'SUCCEEDED';
+          this.messageStatus = 'ОТПРАВЛЕНО';
           this.messageStyle = 'message-success';
           break;
         case 'failed':
-          this.messageStatus = 'FAILDED';
+          this.messageStatus = 'ОШИБКА';
           this.messageStyle = 'message-failure';
           break;
         case 'canceled':
-          this.messageStatus = 'CANCELED';
+          this.messageStatus = 'ОТМЕНЕНО';
           this.messageStyle = 'message-canceled';
           break;
         default:
-          this.messageStatus = 'PROCESSING';
+          this.messageStatus = 'В ОБРАБОТКЕ...';
           this.messageStyle = 'message';
       }
     }
   },
   mounted() {
-    this.messageStatus = this.$props.message.status
+    this.messageStatus = this.$props.message.status;
     this.assignStyle(this.messageStatus)
     if (this.campaignStatus === 'launched' && this.message.status === 'processing') {
-      this.assignWebSocket();
       this.showCheckButton = true;
+      this.assignWebSocket();
     }
   },
 }
@@ -133,5 +152,10 @@ export default {
   border: 2px solid darkgrey;
   margin: 20px;
   padding-right: 20px;
+}
+.two__seconds {
+  font-size: 0.7em;
+  color: darkred;
+  height: 12px;
 }
 </style>
