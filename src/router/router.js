@@ -1,13 +1,14 @@
 import store from "@/store/store";
 import { createRouter, createWebHistory } from "vue-router";
 import { IS_USER_AUTHENTICATED_GETTER } from "@/store/storeConstants";
-import Home from "@/pages/Home";
+import HomePage from "@/pages/HomePage";
 import ErrorPage from "@/pages/ErrorPage";
 import RegisterPage from "@/pages/RegisterPage";
 import LoginPage from "@/pages/LoginPage";
 import CustomersPage from "@/pages/CustomersPage";
+import CustomerDetailsPage from "@/pages/CustomerDetailsPage";
 import CampaignsPage from "@/pages/CampaignsPage";
-import CampaignDetailsPage from "@/pages/CampaignDeatailsPage";
+import CampaignDetailsPage from "@/pages/CampaignDetailsPage";
 import CampaignCustomersPage from "@/pages/CampaignCustomersPage";
 import AddCampaignPage from "@/pages/AddCampaignPage";
 import AddCustomerPage from "@/pages/AddCustomerPage";
@@ -15,7 +16,7 @@ import AddCustomerPage from "@/pages/AddCustomerPage";
 const routes = [
     {
         path: '/',
-        component: Home
+        component: HomePage
     },
     {
         path: '/error',
@@ -57,6 +58,12 @@ const routes = [
     {
         path: '/customers',
         component: CustomersPage,
+        meta: { loggedIn: true }
+    },
+    {
+        name: 'customerDetails',
+        path: '/customers/:id',
+        component: CustomerDetailsPage,
         meta: { loggedIn: true }
     },
     {

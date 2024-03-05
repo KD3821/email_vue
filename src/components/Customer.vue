@@ -3,14 +3,14 @@
     <div v-if="customerMessageView" class="message__view">
       <table>
         <tr>
-          <td>Клиент ID: {{ customer.id }}</td>
+          <td>ID клиента: {{ customer.id }}</td>
           <td>Телефон: {{ customer.phone }}</td>
           <td>Оператор: {{ customer.carrier }}</td>
           <td>Тэг: {{ customer.tag }}</td>
         </tr>
       </table>
     </div>
-    <div v-else class="customer__view">
+    <div v-else class="list__view">
       <div>
         <div>ID: {{ customer.id }}</div>
         <div>Телефон: {{ customer.phone }}</div>
@@ -21,12 +21,12 @@
       <my-button
         v-on:click="$router.push(`/customers/${customer.id}`)"
       >
-        Редактировать
+        Данные
       </my-button>
       <my-button
-        v-on:click="$router.push(`/customers/${customer.id}/messages`)"
+        v-on:click="$router.push(`/customers/${customer.id}`)"
       >
-        Сообщения
+        Редактировать
       </my-button>
     </div>
   </div>
@@ -35,7 +35,7 @@
 <script>
 import MyButton from "@/components/UI/MyButton";
 export default {
-  components: {MyButton},
+  components: { MyButton },
   props: {
     customer: {
       type: Object,
@@ -59,7 +59,7 @@ export default {
   background-color: lightcyan;
   color: black;
 }
-.customer__view {
+.list__view {
   display: inline;
   margin-left: 50px;
 }
