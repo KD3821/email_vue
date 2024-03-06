@@ -40,19 +40,11 @@ import {mapActions, mapMutations} from "vuex";
 import CreateCustomerValidations from "@/services/CreateCustomerValidations";
 import CreateCampaignValidations from "@/services/CreateCampaignValidations";
 import axiosInstance from "@/services/AxiosTokenInstance";
-import MyInput from "@/components/UI/MyInput";
-import MyButton from "@/components/UI/MyButton";
-import MySelect from "@/components/UI/MySelect";
 import {
   LOADING_SPINNER_SHOW_MUTATION,
   REFRESH_ACTION
 } from "@/store/storeConstants";
 export default {
-  components: {
-    MyInput,
-    MyButton,
-    MySelect
-  },
   props: {
     customer: {
       type: Object,

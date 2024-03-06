@@ -38,18 +38,12 @@
 
 <script>
 import { mapActions, mapMutations } from "vuex";
-import MyButton from "@/components/UI/MyButton"
-import MyInput from "@/components/UI/MyInput";
 import LoginValidations from "@/services/LoginValidations";
 import {
   LOGIN_ACTION,
   LOADING_SPINNER_SHOW_MUTATION,
 } from "@/store/storeConstants";
 export default {
-  components: {
-    MyInput,
-    MyButton
-  },
   data() {
     return {
       email: '',

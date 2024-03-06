@@ -4,11 +4,11 @@
       <div>ID: {{ campaign.id }}</div>
       <div>
         Начало:
-        <MyDate v-bind:date="campaign.start_at"/>
+        <my-date v-bind:date="campaign.start_at"/>
       </div>
       <div>
         Завершение:
-        <MyDate v-bind:date="campaign.finish_at"/>
+        <my-date v-bind:date="campaign.finish_at"/>
       </div>
       <div>Текст: {{ campaign.text }}</div>
       <div>Фильтр: {{ campaign.params.tag }} {{ campaign.params.carrier }}</div>
@@ -65,8 +65,6 @@
 
 <script>
 import Message from "@/components/Message";
-import MyButton from "@/components/UI/MyButton";
-import MyDate from "@/components/UI/MyDate";
 import { mapActions, mapMutations } from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
 import {
@@ -74,11 +72,7 @@ import {
   REFRESH_ACTION
 } from "@/store/storeConstants";
 export default {
-  components: {
-    MyDate,
-    Message,
-    MyButton
-  },
+  components: { Message },
   props: {
     campaign: {
       type: Object,

@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import MyInput from "@/components/UI/MyInput";
-import MyButton from "@/components/UI/MyButton";
 import CustomerList from "@/components/CustomerList";
 import {mapActions, mapMutations} from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
@@ -29,11 +27,7 @@ import {
   REFRESH_ACTION
 } from "@/store/storeConstants";
 export default {
-  components: {
-    CustomerList,
-    MyButton,
-    MyInput
-  },
+  components: { CustomerList },
   data() {
     return {
       customers:[],

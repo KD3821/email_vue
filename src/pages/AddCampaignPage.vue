@@ -53,19 +53,11 @@
 </template>
 
 <script>
-import MyInput from "@/components/UI/MyInput";
-import MyButton from "@/components/UI/MyButton";
-import MySelect from "@/components/UI/MySelect";
 import axiosInstance from "@/services/AxiosTokenInstance";
 import { mapActions } from "vuex";
 import { REFRESH_ACTION } from "@/store/storeConstants";
 import CreateCampaignValidations from "@/services/CreateCampaignValidations";
 export default {
-  components: {
-    MyInput,
-    MyButton,
-    MySelect
-  },
   data() {
     return {
       isRefreshed: false,

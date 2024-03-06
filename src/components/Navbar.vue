@@ -16,14 +16,12 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import MyButton from "@/components/UI/MyButton";
 import {
   IS_USER_AUTHENTICATED_GETTER,
   GET_USER_NAME,
   LOGOUT_ACTION
 } from "@/store/storeConstants";
 export default {
-  components: { MyButton },
   computed: {
     ...mapGetters('auth', {
       isAuthenticated: IS_USER_AUTHENTICATED_GETTER

@@ -5,7 +5,7 @@
         customerMessageView
     />
     <div>Дата отправления:<br>
-      <MyDate v-bind:date="message.sent_at"/>
+      <my-date v-bind:date="message.sent_at"/>
     </div>
     <div v-if="showCheckButton">
       Статус:
@@ -26,14 +26,8 @@
 
 <script>
 import Customer from "@/components/Customer";
-import MyButton from "@/components/UI/MyButton";
-import MyDate from "@/components/UI/MyDate";
 export default {
-  components: {
-    Customer,
-    MyButton,
-    MyDate
-  },
+  components: { Customer },
   props: {
     message: {
       type: Object,

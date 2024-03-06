@@ -44,12 +44,10 @@
 </template>
 
 <script>
-import MyButton from "@/components/UI/MyButton";
 import { mapActions } from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
 import { REFRESH_ACTION } from "@/store/storeConstants";
 export default {
-  components: { MyButton },
   props: {
     customer: {
       type: Object,

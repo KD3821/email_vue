@@ -29,21 +29,13 @@
 <script>
 import axiosInstance from "@/services/AxiosTokenInstance";
 import CampaignList from "@/components/CampaignList";
-import MyInput from "@/components/UI/MyInput";
-import MyButton from "@/components/UI/MyButton";
-import MySelect from "@/components/UI/MySelect";
 import { mapActions, mapMutations } from "vuex";
 import {
   REFRESH_ACTION,
   LOADING_SPINNER_SHOW_MUTATION,
 } from "@/store/storeConstants";
 export default {
-  components: {
-    CampaignList,
-    MyInput,
-    MyButton,
-    MySelect
-  },
+  components: { CampaignList },
   data() {
     return {
       campaigns: [],

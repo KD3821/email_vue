@@ -48,15 +48,9 @@
 
 <script>
 import {mapActions} from 'vuex';
-import MyButton from "@/components/UI/MyButton"
-import MyInput from "@/components/UI/MyInput";
 import SignupValidations from "@/services/SignupValidations";
 import { SIGNUP_ACTION } from "@/store/storeConstants";
 export default {
-  components: {
-    MyInput,
-    MyButton
-  },
   data() {
     return {
       username: '',
