@@ -67,6 +67,12 @@ const routes = [
         meta: { loggedIn: true }
     },
     {
+        name: 'customerEdit',
+        path: '/customers/:id/:action',
+        component: CustomerDetailsPage,
+        meta: { loggedIn: true }
+    },
+    {
         path: '/customers/add',
         component: AddCustomerPage,
         meta: { loggedIn: true }

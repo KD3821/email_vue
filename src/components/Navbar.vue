@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <div v-on:click="$router.push('/')" class="logo">MONKEY SERVICE</div>
+    <div v-on:click="$router.push('/')" class="logo">MAIL SERVICE</div>
     <div v-if="isAuthenticated" class="navbar__bttns">
       <span id="user">Пользователь: {{ userName }}</span>
       <my-button v-on:click="$router.push('/campaigns')">Рассылки</my-button>

@@ -1,13 +1,21 @@
 <template>
-  <div>
-    <h2>Данные клиента:</h2>
+  <div v-if="editView">
+    <h2>Данные клиента c ID:{{ customer.id }}</h2>
     <CustomerForm
         v-bind:customer="customer"
+    />
+  </div>
+  <div v-else>
+    <h2>Информация о клиенте:</h2>
+    <Customer
+        v-bind:customer="customer"
+        customerInfoView
     />
   </div>
 </template>
 
 <script>
+import Customer from "@/components/Customer";
 import CustomerForm from "@/components/CustomerForm";
 import { mapActions, mapMutations } from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
@@ -16,12 +24,16 @@ import {
   REFRESH_ACTION
 } from "@/store/storeConstants";
 export default {
-  components: { CustomerForm },
+  components: {
+    Customer,
+    CustomerForm
+  },
   data() {
     return {
       customer: {},
       customerId: '',
       isRefreshed: false,
+      editView: false
     }
   },
   methods: {
@@ -44,9 +56,11 @@ export default {
             await this.getRefresh();
             this.isRefreshed = true;
           } catch (err) {
+            this.showLoading(false);
             this.$router.replace('/login');
           }
         } else {
+          this.showLoading(false);
           this.$router.replace('/error');
         }
       }
@@ -60,6 +74,7 @@ export default {
   },
   created() {
     this.customerId = this.$route.params.id;
+    this.editView = this.$route.params.action === 'edit';
     this.runFetchCustomer();
   }
 }

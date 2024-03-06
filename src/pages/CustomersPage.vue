@@ -22,9 +22,12 @@
 import MyInput from "@/components/UI/MyInput";
 import MyButton from "@/components/UI/MyButton";
 import CustomerList from "@/components/CustomerList";
-import { mapActions } from "vuex";
-import { REFRESH_ACTION} from "@/store/storeConstants";
+import {mapActions, mapMutations} from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
+import {
+  LOADING_SPINNER_SHOW_MUTATION,
+  REFRESH_ACTION
+} from "@/store/storeConstants";
 export default {
   components: {
     CustomerList,
@@ -43,9 +46,13 @@ export default {
     ...mapActions('auth', {
       getRefresh: REFRESH_ACTION
     }),
+    ...mapMutations({
+      showLoading: LOADING_SPINNER_SHOW_MUTATION
+    }),
     async fetchCustomers() {
       try {
         await axiosInstance.get('http://127.0.0.1:8000/api/customers/').then((response) => {
+          this.showLoading(false);
           this.customers = response.data.results;
           this.count = response.data.count;
           this.isRefreshed = false;
@@ -57,13 +64,16 @@ export default {
             this.isRefreshed = true;
           } catch (err) {
             this.$router.replace('/login');
+            this.showLoading(false);
           }
         } else {
           this.$router.replace('/error');
+          this.showLoading(false);
         }
       }
     },
     async runFetchCustomers() {
+      this.showLoading(true);
       do {
         await this.fetchCustomers();
       } while (this.isRefreshed)

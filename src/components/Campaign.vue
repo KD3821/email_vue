@@ -122,12 +122,12 @@ export default {
             await this.getRefresh();
             this.isRefreshed = true;
           } catch (err) {
-            this.$router.replace('/login');
             this.showLoading(false);
+            this.$router.replace('/login');
           }
         } else {
-          this.$router.replace('/error');
           this.showLoading(false);
+          this.$router.replace('/error');
         }
       }
     },

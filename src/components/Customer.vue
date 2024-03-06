@@ -19,21 +19,35 @@
         <div>Часовой пояс: {{ customer.tz_name }}</div>
       </div>
       <my-button
-        v-on:click="$router.push(`/customers/${customer.id}`)"
+          v-if="!customerInfoView"
+          v-on:click="$router.push({ name: 'customerDetails', params: { id: customer.id }})"
       >
-        Данные
+        Данные клиента
       </my-button>
       <my-button
-        v-on:click="$router.push(`/customers/${customer.id}`)"
+          v-if="!customerInfoView"
+          v-on:click="$router.push({ name: 'customerEdit', params: { id: customer.id, action: 'edit' }})"
       >
         Редактировать
       </my-button>
+      <my-button
+          v-if="customerInfoView && !showDeleted"
+          v-on:click="deleteCustomer"
+      >
+        Удалить
+      </my-button>
+      <div v-show="showDeleted" class="deleted">
+        Клиент удален!
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import MyButton from "@/components/UI/MyButton";
+import { mapActions } from "vuex";
+import axiosInstance from "@/services/AxiosTokenInstance";
+import { REFRESH_ACTION } from "@/store/storeConstants";
 export default {
   components: { MyButton },
   props: {
@@ -43,7 +57,45 @@ export default {
     },
     customerMessageView: {
       type: Boolean
+    },
+    customerInfoView: {
+      type: Boolean
     }
+  },
+  data() {
+    return {
+      isRefreshed: false,
+      showDeleted: false,
+    }
+  },
+  methods: {
+    ...mapActions('auth', {
+      getRefresh: REFRESH_ACTION
+    }),
+    async deleteCustomer() {
+      if (confirm("Удалить клиента?")) {
+        try {
+          await axiosInstance.delete(`http://127.0.0.1:8000/api/customers/${this.customer.id}/`).then((response) => {
+            this.showDeleted = response.status === 204;
+            this.isRefreshed = false;
+          })
+        } catch (e) {
+          if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
+            try {
+              await this.getRefresh();
+              this.isRefreshed = true;
+            } catch (err) {
+              this.$router.replace('/login');
+            }
+          } else {
+            this.$router.replace('/error');
+          }
+        }
+      }
+    }
+  },
+  beforeRouteUpdate() {
+    console.log('hey')
   }
 }
 </script>
@@ -60,11 +112,16 @@ export default {
   color: black;
 }
 .list__view {
-  display: inline;
+  display: flex;
+  align-items: center;
   margin-left: 50px;
 }
 .message__view {
   display: flex;
   justify-content: center;
+}
+.deleted {
+  color: darkred;
+  border: 1px solid black;
 }
 </style>
