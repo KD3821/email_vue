@@ -9,7 +9,7 @@ import CustomersPage from "@/pages/CustomersPage";
 import CustomerDetailsPage from "@/pages/CustomerDetailsPage";
 import CampaignsPage from "@/pages/CampaignsPage";
 import CampaignDetailsPage from "@/pages/CampaignDetailsPage";
-import CampaignCustomersPage from "@/pages/CampaignCustomersPage";
+import CampaignControlsPage from "@/pages/CampaignControlsPage";
 import AddCampaignPage from "@/pages/AddCampaignPage";
 import AddCustomerPage from "@/pages/AddCustomerPage";
 
@@ -45,9 +45,9 @@ const routes = [
         meta: { loggedIn: true }
     },
     {
-        name: 'campaignCustomers',
-        path: '/campaigns/:id/customers',
-        component: CampaignCustomersPage,
+        name: 'campaignControls',
+        path: '/campaigns/:id/controls',
+        component: CampaignControlsPage,
         meta: { loggedIn: true }
     },
     {

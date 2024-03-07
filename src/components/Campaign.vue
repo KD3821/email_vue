@@ -17,35 +17,30 @@
     <div v-if="campaignDetailedView" class="detailed__view">
       <div class="stats__bttns">
         <my-button
-            v-on:click="$router.push({ name: 'campaignDetails', params: { id: campaign.id }})"
+            v-on:click="getStatsSingle"
         >
           Статистика рассылки
         </my-button>
         <my-button
-            v-on:click="$router.push({ name: 'campaignCustomers', params: { id: campaign.id }})"
+            v-on:click="getStatsAll"
         >
           Статистика всех рассылок
         </my-button>
       </div>
-      <div class="stats__view">
-        <div v-if="campaignStats">
-          Статистика по данной рассылке:
-        </div>
-        <div v-else>
-          Статистика по всем рассылкам:
-        </div>
+      <div class="stats">
+        <Stats singleStatsView />
       </div>
     </div>
     <div v-else class="campaign__view">
       <my-button
           v-on:click="$router.push({ name: 'campaignDetails', params: { id: campaign.id }})"
       >
-        Детали
+        Информация
       </my-button>
       <my-button
-          v-on:click="$router.push({ name: 'campaignCustomers', params: { id: campaign.id }})"
+          v-on:click="$router.push({ name: 'campaignControls', params: { id: campaign.id }})"
       >
-        Получатели
+        Управление
       </my-button>
     </div>
   </div>
@@ -65,6 +60,7 @@
 
 <script>
 import Message from "@/components/Message";
+import Stats from "@/components/Stats";
 import { mapActions, mapMutations } from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
 import {
@@ -72,7 +68,10 @@ import {
   REFRESH_ACTION
 } from "@/store/storeConstants";
 export default {
-  components: { Message },
+  components: {
+    Stats,
+    Message
+  },
   props: {
     campaign: {
       type: Object,
@@ -90,8 +89,7 @@ export default {
       campaignId: '',
       isRefreshed: false,
       showNoMessages: false,
-      campaignStats: {},
-      allCampaignsStats: {}
+      singleStatsView: true
     }
   },
   methods: {
