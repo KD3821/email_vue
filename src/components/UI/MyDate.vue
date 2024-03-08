@@ -9,8 +9,7 @@ export default {
   name: 'my-date',
   props: {
     date: {
-      type: String,
-      required: true
+      type: String
     }
   },
   data() {
@@ -30,10 +29,25 @@ export default {
       });
       let dateToFormat = new Date(this.date);
       this.formattedDate = formatter.format(dateToFormat);
+    },
+    async getDateProp() {
+      let date = this.$props.date;
+      if (date !== undefined) {
+        this.formatDate();
+      } else {
+        await this.watchDateProp();
+      }
+    },
+    async watchDateProp() {
+      if (this.$props.date === undefined) {
+        setTimeout(this.getDateProp, 50)
+      } else {
+        await this.getDateProp();
+      }
     }
   },
   mounted() {
-    this.formatDate()
+    this.watchDateProp();
   }
 }
 </script>

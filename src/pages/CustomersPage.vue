@@ -1,15 +1,17 @@
 <template>
   <div>
-    <h2>Клиенты</h2>
+    <div class="top__bttns">
+      <h2>Клиенты</h2>
+      <my-button v-on:click="this.$router.push('/customers/add')">
+        Добавить клиента
+      </my-button>
+    </div>
     <div class="dock__bttns">
       <my-input
         v-bind:value="searchQuery"
         v-on:input="searchQuery = $event.target.value"
         placeholder="Найти клиента по номеру телефона..."
       ></my-input>
-      <my-button v-on:click="this.$router.push('/customers/add')">
-        Добавить клиента
-      </my-button>
     </div>
     <customer-list
         v-bind:count

@@ -17,18 +17,18 @@
     <div v-if="campaignDetailedView" class="detailed__view">
       <div class="stats__bttns">
         <my-button
-            v-on:click="getStatsSingle"
+            v-on:click="fetchSingleStats"
         >
           Статистика рассылки
         </my-button>
         <my-button
-            v-on:click="getStatsAll"
+            v-on:click="fetchAllStats"
         >
           Статистика всех рассылок
         </my-button>
       </div>
       <div class="stats">
-        <Stats singleStatsView />
+        <Stats v-bind:singleStatsView="showSingleStats" />
       </div>
     </div>
     <div v-else class="campaign__view">
@@ -89,7 +89,7 @@ export default {
       campaignId: '',
       isRefreshed: false,
       showNoMessages: false,
-      singleStatsView: true
+      showSingleStats: true
     }
   },
   methods: {
@@ -128,6 +128,12 @@ export default {
       do {
         await this.fetchCampaignMessages()
       } while (this.isRefreshed)
+    },
+    fetchSingleStats() {
+      this.showSingleStats = true;
+    },
+    fetchAllStats() {
+      this.showSingleStats = false;
     }
   },
   mounted() {
@@ -160,8 +166,20 @@ export default {
 }
 .stats__bttns {
   display: flex;
+  justify-content: space-evenly;
   padding: 10px;
   background-color: paleturquoise;
   border: 1px solid grey;
+}
+.stats {
+  text-align: center;
+  border: 1px solid grey;
+  border-top: none;
+  background-color: ghostwhite;
+  width: 485px;
+}
+.stats__bttns > button:focus {
+  outline: 2px groove darkred;
+  outline-offset: 1px;
 }
 </style>

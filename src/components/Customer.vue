@@ -91,9 +91,6 @@ export default {
         }
       }
     }
-  },
-  beforeRouteUpdate() {
-    console.log('hey')
   }
 }
 </script>

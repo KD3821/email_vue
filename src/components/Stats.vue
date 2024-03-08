@@ -1,22 +1,45 @@
 <template>
   <div v-if="singleStatsView">
-    Статистика по данной рассылке на:
-    <span>{{ stats.date }}</span>
-    <span>{{ stats.msg_total }}</span>
-    <span>{{ stats.msg_ok }}</span>
-    <span>{{ stats.msg_failed }}</span>
-    <span>{{ stats.msg_canceled }}</span>
-    <span>{{ stats.msg_processing }}</span>
+    Статистика по данной рассылке:
+    <my-date v-bind:date="stats.date"/>
+    <table class="stats__table">
+      <tr>
+        <th style="color: blue">Cообщения</th>
+        <th style="color: darkgreen">Отправлено</th>
+        <th>В процессе</th>
+        <th style="color: darkslategray">Отменено</th>
+        <th style="color: darkred">Ошибка</th>
+      </tr>
+      <tr>
+        <td>{{ stats.msg_total }}</td>
+        <td>{{ stats.msg_ok }}</td>
+        <td>{{ stats.msg_processing }}</td>
+        <td>{{ stats.msg_canceled }}</td>
+        <td>{{ stats.msg_failed }}</td>
+      </tr>
+    </table>
   </div>
   <div v-else>
-    Статистика по всем рассылкам на:
-    <span>{{ stats.date }}</span>
-    <span>{{ stats.campaign_total }}</span>
-    <span>{{ stats.msg_total }}</span>
-    <span>{{ stats.msg_ok }}</span>
-    <span>{{ stats.msg_failed }}</span>
-    <span>{{ stats.msg_canceled }}</span>
-    <span>{{ stats.msg_processing }}</span>
+    Статистика по всем рассылкам:
+    <my-date v-bind:date="stats.date"/>
+    <table class="stats__table">
+      <tr>
+        <th style="color: blue">Сообщения</th>
+        <th style="color: darkgreen">Отправлено</th>
+        <th>В процессе</th>
+        <th style="color: darkslategray">Отменено</th>
+        <th style="color: darkred">Ошибка</th>
+        <th style="color: blue">Рассылки</th>
+      </tr>
+      <tr>
+        <td>{{ stats.msg_total }}</td>
+        <td>{{ stats.msg_ok }}</td>
+        <td>{{ stats.msg_processing }}</td>
+        <td>{{ stats.msg_failed }}</td>
+        <td>{{ stats.msg_canceled }}</td>
+        <td>{{ stats.campaign_total }}</td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -36,7 +59,12 @@ export default {
       campaignId: '',
       isRefreshed: false,
       stats: {},
-      api_route: ''
+      api_route: '',
+    }
+  },
+  watch: {
+    singleStatsView: async function(newValue, oldValue) {
+      await this.runFetchStats();
     }
   },
   methods: {
@@ -76,10 +104,13 @@ export default {
   created() {
     this.campaignId = this.$route.params.id
     this.runFetchStats();
-  }
+  },
 }
 </script>
 
 <style scoped>
-
+.stats__table > th, tr, td {
+  border: 1px groove grey;
+  text-align: center;
+}
 </style>

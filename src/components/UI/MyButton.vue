@@ -18,4 +18,7 @@ export default {
   margin: 10px;
   cursor: pointer;
 }
+.btn:active {
+  background: darkgrey;
+}
 </style>

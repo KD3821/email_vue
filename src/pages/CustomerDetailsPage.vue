@@ -10,6 +10,7 @@
     <Customer
         v-bind:customer="customer"
         customerInfoView
+        class="detailed__view"
     />
   </div>
 </template>
@@ -43,7 +44,7 @@ export default {
     ...mapMutations({
       showLoading: LOADING_SPINNER_SHOW_MUTATION
     }),
-    async FetchCustomer() {
+    async fetchCustomer() {
       try {
         await axiosInstance.get(`http://127.0.0.1:8000/api/customers/${this.customerId}/`).then((response) => {
           this.showLoading(false);
@@ -68,7 +69,7 @@ export default {
     async runFetchCustomer() {
       this.showLoading(true);
       do {
-        await this.FetchCustomer();
+        await this.fetchCustomer();
       } while (this.isRefreshed);
     }
   },
@@ -81,5 +82,10 @@ export default {
 </script>
 
 <style scoped>
-
+.detailed__view {
+  display: flex;
+  align-items: center;
+  margin-left: 50px;
+  max-width: 350px;
+}
 </style>

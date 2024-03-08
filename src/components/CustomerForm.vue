@@ -38,7 +38,6 @@
 <script>
 import {mapActions, mapMutations} from "vuex";
 import CreateCustomerValidations from "@/services/CreateCustomerValidations";
-import CreateCampaignValidations from "@/services/CreateCampaignValidations";
 import axiosInstance from "@/services/AxiosTokenInstance";
 import {
   LOADING_SPINNER_SHOW_MUTATION,
@@ -96,7 +95,7 @@ export default {
           this.oldTimeZone === customerData.tz_name
       ) {
         this.errors = {old: 'Данные не были изменены.'}
-        this.failure = CreateCampaignValidations.getErrorMessageDetail(this.errors);
+        this.failure = CreateCustomerValidations.getErrorMessageDetail(this.errors);
         this.showLoading(false);
         return false;
       }
@@ -108,7 +107,7 @@ export default {
       );
       this.errors = validations.checkCreateCustomerValidations()
       if ('phone' in this.errors || 'timezone' in this.errors || 'carrier' in this.errors) {
-        this.failure = CreateCampaignValidations.getErrorMessageDetail(this.errors);
+        this.failure = CreateCustomerValidations.getErrorMessageDetail(this.errors);
         this.showLoading(false);
         return false;
       }
@@ -163,7 +162,7 @@ export default {
           this.tag = 'загружаем...';
           this.timeZone = 'загружаем...';
         }
-        setTimeout(this.getCustomerProp, 100)
+        setTimeout(this.getCustomerProp, 50)
       } else {
         await this.getCustomerProp();
       }

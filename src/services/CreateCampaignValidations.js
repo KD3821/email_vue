@@ -11,16 +11,18 @@ class CreateCampaignValidations {
     checkCreateCampaignValidations() {
         let errors = [];
         if (!Validations.checkCampaignStartDate(this.startAt, this.finishAt)) {
-            errors['start'] = 'Дата начала рассылки не может быть позднее даты ее завершения';
+            console.log(this.startAt)
+            console.log(this.finishAt)
+            errors['start'] = 'Дата начала рассылки не может быть позднее даты ее завершения.';
         }
         if (!Validations.checkCampaignFinishDate(this.finishAt)) {
-            errors['finish'] = 'Дата завершения рассылки не может быть раньше даты ее запуска';
+            errors['finish'] = 'Дата завершения рассылки не может быть в прошлом.';
         }
         if (this.text.length < 10) {
-            errors['text'] = 'Минимальная длина сообщения - 10 символов';
+            errors['text'] = 'Минимальная длина сообщения - 10 символов.';
         }
         if (!!!this.carrier) {
-            errors['carrier'] = 'Выберите мобильного оператора';
+            errors['carrier'] = 'Выберите мобильного оператора.';
         }
         return errors;
     }
