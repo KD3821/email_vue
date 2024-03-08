@@ -1,9 +1,43 @@
 <template>
   <div v-bind:class="messageStyle">
-    <Customer
-        v-bind:customer="message.customer"
-        customerMessageView
-    />
+    <div v-if="customerDetailedView" class="campaign">
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Рассылка ID:</th>
+          <th>Фильтр</th>
+          <th>Статус рассылки</th>
+          <th>Текст</th>
+        </tr>
+        <tr>
+          <td>{{ message.id }}</td>
+          <td>{{ message.campaign.id }}</td>
+          <td>{{ message.campaign.params.carrier }} {{ message.campaign.params.tag }}</td>
+          <td>{{ message.campaign.status }}</td>
+          <td>{{ message.campaign.text }}</td>
+        </tr>
+      </table>
+    </div>
+    <div v-else class="customer">
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Клиент ID</th>
+          <th>Телефон</th>
+          <th>Оператор</th>
+          <th>Тэг</th>
+          <th>Час.пояс</th>
+        </tr>
+        <tr>
+          <td>{{ message.id }}</td>
+          <td>{{ message.customer.id }}</td>
+          <td>{{ message.customer.phone }}</td>
+          <td>{{ message.customer.carrier }}</td>
+          <td>{{ message.customer.tag }}</td>
+          <td>{{ message.customer.tz_name }}</td>
+        </tr>
+    </table>
+    </div>
     <div>Дата отправления:<br>
       <my-date v-bind:date="message.sent_at"/>
     </div>
@@ -25,9 +59,7 @@
 </template>
 
 <script>
-import Customer from "@/components/Customer";
 export default {
-  components: { Customer },
   props: {
     message: {
       type: Object,
@@ -36,6 +68,9 @@ export default {
     campaignStatus: {
       type: undefined,
       required: true
+    },
+    customerDetailedView: {
+      type: Boolean
     }
   },
   data(){
@@ -110,6 +145,28 @@ export default {
 </script>
 
 <style scoped>
+.customer {
+  border: 3px solid lightseagreen;
+  margin: 15px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: lightcyan;
+  color: black;
+  text-align: center;
+}
+.campaign {
+  border: 3px solid dodgerblue;
+  margin: 15px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: seashell;
+  color: black;
+  text-align: center;
+}
 .message {
   display: flex;
   align-items: center;

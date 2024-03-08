@@ -6,42 +6,49 @@
           v-bind:value="startTime"
           v-on:input="startTime = $event.target.value"
           type="time"
+          v-bind:disabled="!campaignScheduled"
       ></my-input>
       <my-input
           v-bind:value="startDate"
           v-on:input="startDate = $event.target.value"
           type="date"
+          v-bind:disabled="!campaignScheduled"
       ></my-input>
       <p>Время остановки:</p>
       <my-input
           v-bind:value="finishTime"
           v-on:input="finishTime = $event.target.value"
           type="time"
+          v-bind:disabled="!campaignScheduled"
       ></my-input>
       <my-input
           v-bind:value="finishDate"
           v-on:input="finishDate = $event.target.value"
           type="date"
+          v-bind:disabled="!campaignScheduled"
       ></my-input>
       <p>Фильтр:</p>
       <my-select
           v-bind:value="selectedCarrier"
           v-on:input="selectedCarrier = $event.target.value"
           v-bind:options="carrierOptions"
+          v-bind:disabled="!campaignScheduled"
       />
       <my-input
           v-bind:value="tag"
           v-on:input="tag = $event.target.value"
           type="text"
           placeholder="Тэг"
+          v-bind:disabled="!campaignScheduled"
       ></my-input>
       <my-input
           v-bind:value="text"
           v-on:input="text = $event.target.value"
           type="text"
           placeholder="Текст рассылки"
+          v-bind:disabled="!campaignScheduled"
       ></my-input>
-      <div v-if="campaignScheduled">
+      <div v-if="campaignScheduled" class="result">
         <my-button
             v-on:click="runUpdateCampaign"
         >
@@ -232,5 +239,7 @@ export default {
 </script>
 
 <style scoped>
-
+.result {
+  text-align: center;
+}
 </style>

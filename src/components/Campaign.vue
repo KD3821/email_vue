@@ -12,7 +12,7 @@
       </div>
       <div>Текст: {{ campaign.text }}</div>
       <div>Фильтр: {{ campaign.params.tag }} {{ campaign.params.carrier }}</div>
-      <div>Статус: {{ campaign.status }}</div>
+      <div>Статус: {{ campaignStatuses[campaign.status] }}</div>
     </div>
     <div v-if="campaignDetailedView" class="detailed__view">
       <div class="stats__bttns">
@@ -54,7 +54,7 @@
     />
   </div>
   <div v-show="showNoMessages">
-    <h2>Ожидает запуска ...</h2>
+    <h2>Нет сообщений ...</h2>
   </div>
 </template>
 
@@ -89,7 +89,12 @@ export default {
       campaignId: '',
       isRefreshed: false,
       showNoMessages: false,
-      showSingleStats: true
+      showSingleStats: true,
+      campaignStatuses: {
+        scheduled: 'Запланирована',
+        launched: 'В процессе',
+        canceled: 'Отменена',
+      }
     }
   },
   methods: {

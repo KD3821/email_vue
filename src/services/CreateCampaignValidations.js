@@ -11,8 +11,6 @@ class CreateCampaignValidations {
     checkCreateCampaignValidations() {
         let errors = [];
         if (!Validations.checkCampaignStartDate(this.startAt, this.finishAt)) {
-            console.log(this.startAt)
-            console.log(this.finishAt)
             errors['start'] = 'Дата начала рассылки не может быть позднее даты ее завершения.';
         }
         if (!Validations.checkCampaignFinishDate(this.finishAt)) {

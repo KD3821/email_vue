@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Управление рассылкой c ID: {{ campaign.id }}</h2>
+    <h2>Управление рассылкой c ID: {{ campaign.id }} ( {{ campaignStatuses[campaign.status] }} )</h2>
     <CampaignForm
         v-bind:campaign="campaign"
     />
@@ -22,6 +22,11 @@ export default {
     return {
       campaign: {},
       campaignId: '',
+      campaignStatuses: {
+        scheduled: 'Запланирована',
+        launched: 'В процессе',
+        canceled: 'Отменена',
+      }
     }
   },
   methods: {

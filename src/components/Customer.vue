@@ -1,16 +1,25 @@
 <template>
-  <div class="customer">
-    <div v-if="customerMessageView" class="message__view">
-      <table>
-        <tr>
-          <td>ID клиента: {{ customer.id }}</td>
-          <td>Телефон: {{ customer.phone }}</td>
-          <td>Оператор: {{ customer.carrier }}</td>
-          <td>Тэг: {{ customer.tag }}</td>
-        </tr>
-      </table>
+  <div v-if="customerInfoView" class="customer message__view ">
+    <table>
+      <tr>
+        <td>ID клиента: {{ customer.id }}</td>
+        <td>Телефон: {{ customer.phone }}</td>
+        <td>Оператор: {{ customer.carrier }}</td>
+        <td>Тэг: {{ customer.tag }}</td>
+      </tr>
+    </table>
+    <my-button
+        v-if="customerInfoView && !showDeleted"
+        v-on:click="deleteCustomer"
+    >
+      Удалить
+    </my-button>
+    <div v-show="showDeleted" class="deleted">
+      Клиент удален!
     </div>
-    <div v-else class="list__view">
+  </div>
+  <div v-else class="customer list__view">
+    <div class="detailed__view">
       <div>
         <div>ID: {{ customer.id }}</div>
         <div>Телефон: {{ customer.phone }}</div>
@@ -19,35 +28,30 @@
         <div>Часовой пояс: {{ customer.tz_name }}</div>
       </div>
       <my-button
-          v-if="!customerInfoView"
           v-on:click="$router.push({ name: 'customerDetails', params: { id: customer.id }})"
       >
-        Данные клиента
+        Информация
       </my-button>
       <my-button
-          v-if="!customerInfoView"
           v-on:click="$router.push({ name: 'customerEdit', params: { id: customer.id, action: 'edit' }})"
       >
         Редактировать
       </my-button>
-      <my-button
-          v-if="customerInfoView && !showDeleted"
-          v-on:click="deleteCustomer"
-      >
-        Удалить
-      </my-button>
-      <div v-show="showDeleted" class="deleted">
-        Клиент удален!
-      </div>
+
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import MessageList from "@/components/MessageList";
+import {mapActions, mapMutations} from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
-import { REFRESH_ACTION } from "@/store/storeConstants";
+import {
+  REFRESH_ACTION,
+  LOADING_SPINNER_SHOW_MUTATION
+} from "@/store/storeConstants";
 export default {
+  components: { MessageList },
   props: {
     customer: {
       type: Object,
@@ -62,13 +66,21 @@ export default {
   },
   data() {
     return {
+      customerId: '',
       isRefreshed: false,
       showDeleted: false,
+      messages: [],
+      count: 0,
+      campaignStatus: 'launched',
+      showNoMessages: false,
     }
   },
   methods: {
     ...mapActions('auth', {
       getRefresh: REFRESH_ACTION
+    }),
+    ...mapMutations({
+      showLoading: LOADING_SPINNER_SHOW_MUTATION
     }),
     async deleteCustomer() {
       if (confirm("Удалить клиента?")) {
@@ -90,8 +102,8 @@ export default {
           }
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -118,5 +130,11 @@ export default {
 .deleted {
   color: darkred;
   border: 1px solid black;
+}
+.detailed__view {
+  display: flex;
+  align-items: center;
+  max-width: 350px;
+  margin: auto;
 }
 </style>

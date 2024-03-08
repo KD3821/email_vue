@@ -10,13 +10,18 @@
     <Customer
         v-bind:customer="customer"
         customerInfoView
-        class="detailed__view"
+    />
+    <MessageList
+        v-if="messages.length > 0"
+        v-bind:messages="messages"
+        v-bind:count
     />
   </div>
 </template>
 
 <script>
 import Customer from "@/components/Customer";
+import MessageList from "@/components/MessageList";
 import CustomerForm from "@/components/CustomerForm";
 import { mapActions, mapMutations } from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
@@ -27,11 +32,13 @@ import {
 export default {
   components: {
     Customer,
-    CustomerForm
+    CustomerForm,
+    MessageList
   },
   data() {
     return {
       customer: {},
+      messages: [],
       customerId: '',
       isRefreshed: false,
       editView: false
@@ -71,21 +78,49 @@ export default {
       do {
         await this.fetchCustomer();
       } while (this.isRefreshed);
-    }
+    },
+    async fetchCustomerMessages() {
+      try {
+        await axiosInstance.get(`http://127.0.0.1:8000/api/customers/${this.customerId}/customer-messages/`).then((response) => {
+          this.showLoading(false);
+          this.messages = response.data.results;
+          this.count = response.data.count;
+          this.isRefreshed = false;
+          this.showNoMessages = this.messages.length <= 0;
+        })
+      } catch (e) {
+        if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
+          try {
+            await this.getRefresh();
+            this.isRefreshed = true;
+          } catch (err) {
+            this.showLoading(false);
+            this.$router.replace('/login');
+          }
+        } else {
+          this.showLoading(false);
+          this.$router.replace('/error');
+        }
+      }
+    },
+    async runFetchCustomerMessages() {
+      this.showLoading(true);
+      do {
+        await this.fetchCustomerMessages()
+      } while (this.isRefreshed)
+    },
   },
   created() {
     this.customerId = this.$route.params.id;
     this.editView = this.$route.params.action === 'edit';
     this.runFetchCustomer();
+    if (this.editView !== 'edit') {
+      this.runFetchCustomerMessages();
+    }
   }
 }
 </script>
 
 <style scoped>
-.detailed__view {
-  display: flex;
-  align-items: center;
-  margin-left: 50px;
-  max-width: 350px;
-}
+
 </style>
