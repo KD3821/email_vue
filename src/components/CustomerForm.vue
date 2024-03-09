@@ -81,7 +81,7 @@ export default {
       showLoading: LOADING_SPINNER_SHOW_MUTATION
     }),
     async updateCustomer() {
-      this.failure = '';
+      this.success = this.failure = '';
       this.showLoading(true);
       let customerData = {
         phone: this.phone,
@@ -115,6 +115,11 @@ export default {
         await axiosInstance.patch(`http://127.0.0.1:8000/api/customers/${this.$props.customer.id}/`, customerData).then((response) => {
           this.showLoading(false);
           if (response.status === 200) {
+            this.success = 'Изменения успешно сохранены!';
+            this.oldPhone = customerData.phone;
+            this.oldSelectedCarrier = customerData.carrier;
+            this.oldTag = customerData.tag;
+            this.oldTimeZone = customerData.tz_name;
             this.$router.replace(`/customers/${this.$props.customer.id}`);
           } else {
             this.failure = 'ОШИБКА. Проверьте правильность заполнения формы.'

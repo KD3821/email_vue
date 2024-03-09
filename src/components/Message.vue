@@ -30,11 +30,11 @@
         </tr>
         <tr>
           <td>{{ message.id }}</td>
-          <td>{{ message.customer.id }}</td>
-          <td>{{ message.customer.phone }}</td>
-          <td>{{ message.customer.carrier }}</td>
-          <td>{{ message.customer.tag }}</td>
-          <td>{{ message.customer.tz_name }}</td>
+          <td>{{ message?.customer?.id }}</td>
+          <td>{{ message?.customer?.phone }}</td>
+          <td>{{ message?.customer?.carrier }}</td>
+          <td>{{ message?.customer?.tag }}</td>
+          <td>{{ message?.customer?.tz_name }}</td>
         </tr>
     </table>
     </div>

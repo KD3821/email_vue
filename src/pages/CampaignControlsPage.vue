@@ -9,13 +9,14 @@
 
 <script>
 import CampaignForm from "@/components/CampaignForm";
+import axiosInstance from "@/services/AxiosTokenInstance";
+import MyButton from "@/components/UI/MyButton";
+import CreateCampaignValidations from "@/services/CreateCampaignValidations";
 import { mapActions, mapMutations } from "vuex";
 import {
   LOADING_SPINNER_SHOW_MUTATION,
   REFRESH_ACTION
 } from "@/store/storeConstants";
-import axiosInstance from "@/services/AxiosTokenInstance";
-import MyButton from "@/components/UI/MyButton";
 export default {
   components: {MyButton, CampaignForm },
   data() {
@@ -52,6 +53,10 @@ export default {
             this.showLoading(false);
             this.$router.replace('/login');
           }
+        } else if (e.response.status === 400 || e.response.status === 404) {
+          this.failure = CreateCampaignValidations.getErrorMessageDetail(e.response.data);
+          this.showLoading(false);
+          return false;
         } else {
           this.showLoading(false);
           this.$router.replace('/error');

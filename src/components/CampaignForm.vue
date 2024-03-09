@@ -54,7 +54,9 @@
         >
           Сохранить изменения
         </my-button>
-        <my-button>
+        <my-button
+            v-on:click="runLaunchCampaign"
+        >
           Оплатить и запустить рассылку
         </my-button>
         <div v-if="success" class="success">{{ success }}</div>
@@ -126,8 +128,37 @@ export default {
     ...mapMutations({
       showLoading: LOADING_SPINNER_SHOW_MUTATION
     }),
+    async launchCampaign() {
+      if (confirm("Подтвердите оплату услуги по рассылке сообщений.")) {
+        try {
+          await axiosInstance.post(`http://127.0.0.1:8000/api/campaigns/${this.$props.campaign.id}/launch/`).then((response) => {
+            this.showLoading(false);
+            this.isRefreshed = false;
+            this.$router.replace(`/campaigns/${this.$props.campaign.id}`)
+          })
+        } catch (e) {
+          if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
+            try {
+              await this.getRefresh();
+              this.isRefreshed = true;
+            } catch (err) {
+              this.showLoading(false);
+              this.$router.replace('/login');
+            }
+          } else {
+            this.showLoading(false);
+            this.$router.replace('/error');
+          }
+        }
+      }
+    },
+    async runLaunchCampaign() {
+      do {
+        await this.launchCampaign();
+      } while (this.isRefreshed);
+    },
     async updateCampaign() {
-      this.failure = '';
+      this.success = this.failure = '';
       this.showLoading(true);
       let campaignData = {
         start_at: `${this.startDate}T${this.startTime}:00+03:00`,
@@ -167,8 +198,15 @@ export default {
         await axiosInstance.patch(`http://127.0.0.1:8000/api/campaigns/${this.$props.campaign.id}/`, campaignData).then((response) => {
           this.showLoading(false);
           if (response.status === 200) {
-            // this.$router.replace(`/campaigns/${this.$props.campaign.id}`);
             this.success = 'Данные успешно сохранены.';
+            this.oldStartTime = this.startTime;
+            this.oldStartDate = this.startDate;
+            this.oldFinishTime = this.finishTime;
+            this.oldFinishDate = this.finishDate;
+            this.oldText = this.text;
+            this.oldTag = this.tag;
+            this.oldSelectedCarrier = this.selectedCarrier;
+            this.$router.replace(`/campaigns/${this.$props.campaign.id}/controls`);
           } else {
             this.failure = 'ОШИБКА. Проверьте правильность заполнения формы.'
           }
@@ -182,7 +220,7 @@ export default {
             this.$router.replace('/login');
             this.showLoading(false);
           }
-        } else if (e.response.status === 400) {
+        } else if (e.response.status === 400 || e.response.status === 404) {
           this.failure = CreateCampaignValidations.getErrorMessageDetail(e.response.data);
           this.showLoading(false);
           return false;

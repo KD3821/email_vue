@@ -14,6 +14,7 @@
     >
       Удалить
     </my-button>
+    <div v-if="failure" class="failure">{{ failure }}</div>
     <div v-show="showDeleted" class="deleted">
       Клиент удален!
     </div>
@@ -46,6 +47,7 @@
 import MessageList from "@/components/MessageList";
 import {mapActions, mapMutations} from "vuex";
 import axiosInstance from "@/services/AxiosTokenInstance";
+import CreateCustomerValidations from "@/services/CreateCustomerValidations";
 import {
   REFRESH_ACTION,
   LOADING_SPINNER_SHOW_MUTATION
@@ -73,6 +75,7 @@ export default {
       count: 0,
       campaignStatus: 'launched',
       showNoMessages: false,
+      failure: ''
     }
   },
   methods: {
@@ -98,6 +101,12 @@ export default {
               this.$router.replace('/login');
             }
           } else {
+            if (e.response.status === 400) {
+              console.log()
+              this.failure = CreateCustomerValidations.getErrorMessageDetail(e.response.data);
+              this.showLoading(false);
+              return false;
+            }
             this.$router.replace('/error');
           }
         }
