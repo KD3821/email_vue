@@ -86,6 +86,7 @@ export default {
       try {
         await axiosInstance.post('http://127.0.0.1:8000/api/customers/', customerData).then((response) => {
           if (response.status === 201) {
+            this.isRefreshed = false;
             this.$router.replace('/customers');
           } else {
             this.failure = 'ОШИБКА. Проверьте правильность заполнения формы.'

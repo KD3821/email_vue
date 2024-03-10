@@ -88,6 +88,7 @@ export default {
     async deleteCustomer() {
       if (confirm("Удалить клиента?")) {
         try {
+          this.showLoading(true);
           await axiosInstance.delete(`http://127.0.0.1:8000/api/customers/${this.customer.id}/`).then((response) => {
             this.showDeleted = response.status === 204;
             this.isRefreshed = false;
@@ -98,13 +99,13 @@ export default {
               await this.getRefresh();
               this.isRefreshed = true;
             } catch (err) {
+              this.showLoading(false);
               this.$router.replace('/login');
             }
           } else {
+            this.showLoading(false);
             if (e.response.status === 400) {
-              console.log()
               this.failure = CreateCustomerValidations.getErrorMessageDetail(e.response.data);
-              this.showLoading(false);
               return false;
             }
             this.$router.replace('/error');

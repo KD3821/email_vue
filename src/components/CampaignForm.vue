@@ -59,15 +59,26 @@
         >
           Оплатить и запустить рассылку
         </my-button>
+        <my-button
+            v-on:click="runDeleteCampaign"
+        >
+          Удалить рассылку
+        </my-button>
         <div v-if="success" class="success">{{ success }}</div>
         <div v-else class="failure">{{ failure }}</div>
       </div>
       <div v-else>
-        <my-button>
+        <div v-show="showDeleted" class="deleted">
+          Рассылка удалена!
+        </div>
+        <div v-show="showCanceled" class="deleted">
+          {{ deleteMessage }}
+        </div>
+        <my-button
+            v-show="showCancelBttn"
+            v-on:click="runCancelCampaign"
+        >
           Отменить рассылку
-        </my-button>
-        <my-button>
-          Удалить рассылку
         </my-button>
       </div>
     </form>
@@ -84,7 +95,7 @@ import {
 } from "@/store/storeConstants";
 import MyButton from "@/components/UI/MyButton";
 export default {
-  components: {MyButton},
+  components: { MyButton },
   props: {
     campaign: {
       type: Object,
@@ -109,6 +120,10 @@ export default {
       oldTag: '',
       oldText: '',
       campaignScheduled: true,
+      showDeleted: false,
+      showCancelBttn: false,
+      showCanceled: false,
+      deleteMessage: '',
       success: '',
       failure: '',
       errors: {},
@@ -129,7 +144,9 @@ export default {
       showLoading: LOADING_SPINNER_SHOW_MUTATION
     }),
     async launchCampaign() {
+      this.success = this.failure = '';
       if (confirm("Подтвердите оплату услуги по рассылке сообщений.")) {
+        this.showLoading(true);
         try {
           await axiosInstance.post(`http://127.0.0.1:8000/api/campaigns/${this.$props.campaign.id}/launch/`).then((response) => {
             this.showLoading(false);
@@ -145,6 +162,10 @@ export default {
               this.showLoading(false);
               this.$router.replace('/login');
             }
+          } else if (e.response.status === 400) {
+            this.failure = CreateCampaignValidations.getErrorMessageDetail(e.response.data);
+            this.showLoading(false);
+            return false;
           } else {
             this.showLoading(false);
             this.$router.replace('/error');
@@ -155,6 +176,82 @@ export default {
     async runLaunchCampaign() {
       do {
         await this.launchCampaign();
+      } while (this.isRefreshed);
+    },
+    async cancelCampaign() {
+      this.success = this.failure = '';
+      if (confirm("Отменить рассылку?")) {
+        try {
+          this.showLoading(true);
+          await axiosInstance.post(`http://127.0.0.1:8000/api/campaigns/${this.$props.campaign.id}/cancel/`).then((response) => {
+            this.showLoading(false);
+            this.campaignScheduled = false;
+            this.showCancelBttn = false;
+            this.showCanceled = response.status === 200;
+            this.deleteMessage = response.data.cancel_data;
+            this.isRefreshed = false;
+          });
+        } catch (e) {
+          if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
+            try {
+              await this.getRefresh();
+              this.isRefreshed = true;
+            } catch (err) {
+              this.showLoading(false);
+              this.$router.replace('/login');
+            }
+          } else {
+            if (e.response.status === 400) {
+              this.failure = CreateCampaignValidations.getErrorMessageDetail(e.response.data);
+              this.showLoading(false);
+              return false;
+            }
+            this.showLoading(false);
+            this.$router.replace('/error');
+          }
+        }
+      }
+    },
+    async runCancelCampaign() {
+      do {
+        await this.cancelCampaign();
+      } while (this.isRefreshed);
+    },
+    async deleteCampaign() {
+      this.success = this.failure = '';
+      if (confirm("Удалить рассылку?")) {
+        try {
+          this.showLoading(true);
+          await axiosInstance.delete(`http://127.0.0.1:8000/api/campaigns/${this.$props.campaign.id}/`).then((response) => {
+            this.showLoading(false);
+            this.campaignScheduled = false;
+            this.showDeleted = response.status === 204;
+            this.isRefreshed = false;
+          });
+        } catch (e) {
+          if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
+            try {
+              await this.getRefresh();
+              this.isRefreshed = true;
+            } catch (err) {
+              this.showLoading(false);
+              this.$router.replace('/login');
+            }
+          } else {
+            if (e.response.status === 400) {
+              this.failure = CreateCampaignValidations.getErrorMessageDetail(e.response.data);
+              this.showLoading(false);
+              return false;
+            }
+            this.showLoading(false);
+            this.$router.replace('/error');
+          }
+        }
+      }
+    },
+    async runDeleteCampaign() {
+      do {
+        await this.deleteCampaign();
       } while (this.isRefreshed);
     },
     async updateCampaign() {
@@ -249,7 +346,10 @@ export default {
         this.text = this.oldText = campaign.text;
         this.selectedCarrier = this.oldSelectedCarrier = campaign.params.carrier;
         this.tag = this.oldTag = campaign.params.tag;
-        this.campaignScheduled = campaign.status === 'scheduled';
+        this.campaignScheduled = campaign.status === 'scheduled' && campaign.confirmed_at === null;
+        this.showCancelBttn = (
+            (campaign.status === 'scheduled' && campaign.confirmed_at !== null) || campaign.status === 'launched'
+        );
       } else {
         await this.watchCampaignProp();
       }
@@ -279,5 +379,11 @@ export default {
 <style scoped>
 .result {
   text-align: center;
+}
+.deleted {
+  color: darkred;
+  border: 1px solid black;
+  max-width: 200px;
+  margin: auto;
 }
 </style>

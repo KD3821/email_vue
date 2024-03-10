@@ -94,6 +94,7 @@ export default {
         scheduled: 'Запланирована',
         launched: 'В процессе',
         canceled: 'Отменена',
+        finished: 'Завершена'
       }
     }
   },

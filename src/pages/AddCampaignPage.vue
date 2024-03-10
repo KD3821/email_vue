@@ -54,9 +54,12 @@
 
 <script>
 import axiosInstance from "@/services/AxiosTokenInstance";
-import { mapActions } from "vuex";
-import { REFRESH_ACTION } from "@/store/storeConstants";
+import {mapActions, mapMutations} from "vuex";
 import CreateCampaignValidations from "@/services/CreateCampaignValidations";
+import {
+  LOADING_SPINNER_SHOW_MUTATION,
+  REFRESH_ACTION
+} from "@/store/storeConstants";
 export default {
   data() {
     return {
@@ -84,6 +87,9 @@ export default {
     ...mapActions('auth', {
       getRefresh: REFRESH_ACTION
     }),
+    ...mapMutations({
+      showLoading: LOADING_SPINNER_SHOW_MUTATION
+    }),
     async createCampaign() {
       let campaignData = {
         start_at: `${this.startDate}T${this.startTime}:00+03:00`,
@@ -103,11 +109,14 @@ export default {
       this.errors = validations.checkCreateCampaignValidations()
       if ('start' in this.errors || 'finish' in this.errors || 'text' in this.errors || 'carrier' in this.errors) {
         this.failure = CreateCampaignValidations.getErrorMessageDetail(this.errors);
+        this.showLoading(false);
         return false;
       }
       try {
         await axiosInstance.post('http://127.0.0.1:8000/api/campaigns/', campaignData).then((response) => {
+          this.showLoading(false);
           if (response.status === 201) {
+            this.isRefreshed = false;
             this.$router.replace('/campaigns');
           } else {
             this.failure = 'ОШИБКА. Проверьте правильность заполнения формы.'
@@ -119,17 +128,21 @@ export default {
             await this.getRefresh();
             this.isRefreshed = true;
           } catch (err) {
+            this.showLoading(false);
             this.$router.replace('/login');
           }
         } else if (e.response.status === 400) {
           this.failure = CreateCampaignValidations.getErrorMessageDetail(e.response.data);
+          this.showLoading(false);
           return false;
         } else {
+          this.showLoading(false);
           this.$router.replace('/error');
         }
       }
     },
     async runCreateCampaign() {
+      this.showLoading(true);
       do {
         await this.createCampaign();
       } while (this.isRefreshed)
