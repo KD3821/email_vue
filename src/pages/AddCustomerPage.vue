@@ -46,7 +46,7 @@ export default {
     return {
       isRefreshed: false,
       phone: '',
-      selectedCarrier: {},
+      selectedCarrier: '',
       tag: '',
       timeZone: '',
       errors: {},
