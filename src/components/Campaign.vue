@@ -13,6 +13,19 @@
       <div>Текст: {{ campaign.text }}</div>
       <div>Фильтр: {{ campaign.params.tag }} {{ campaign.params.carrier }}</div>
       <div>Статус: {{ campaignStatuses[campaign.status] }}</div>
+      <div
+          v-if="campaign.status==='finished' && campaign.invoice_data===null"
+          class="unpaid"
+      >
+        Счет: не оплачен
+      </div>
+      <div
+          v-else-if="campaign.status==='finished' && campaign.invoice_data!==null"
+          class="paid"
+      >
+        Счет: оплачен
+      </div>
+      <div v-else>Счет: - </div>
     </div>
     <div v-if="campaignDetailedView" class="detailed__view">
       <div class="stats__bttns">
@@ -187,5 +200,11 @@ export default {
 .stats__bttns > button:focus {
   outline: 2px groove darkred;
   outline-offset: 1px;
+}
+.unpaid {
+  color: darkred;
+}
+.paid {
+  color: darkgreen;
 }
 </style>

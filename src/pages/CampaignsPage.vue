@@ -48,6 +48,12 @@ export default {
         {value: 'text', name: 'По тексту сообщения'},
         {value: 'params', name: 'По мобильному оператору'},
         {value: 'status', name: 'По статусу'}
+      ],
+      statuses: [
+        ['Запланирована', 'scheduled'],
+        ['В процессе', 'launched'],
+        ['Отменена', 'canceled'],
+        ['Завершена', 'finished']
       ]
     }
   },
@@ -104,11 +110,20 @@ export default {
     },
     sortedAndSearchedCampaigns() {
       return this.sortedCampaigns.filter(campaign => {
-        if (this.selectedSort === 'params') {
-          return campaign[this.selectedSort].carrier.toLowerCase().includes(this.searchQuery.toLowerCase())
-        } else {
-          let key = !!this.selectedSort ? this.selectedSort : 'text'
-          return campaign[key].toLowerCase().includes(this.searchQuery.toLowerCase())
+        switch (this.selectedSort) {
+          case 'params':
+            return campaign[this.selectedSort].carrier.toLowerCase().includes(this.searchQuery.toLowerCase());
+          case 'status':
+            let filteredStatusesArr = this.statuses.filter( (status) => {
+              return status[0].toLowerCase().includes(this.searchQuery.toLowerCase())
+            });
+            let filteredStatuses = [];
+            for (let el of filteredStatusesArr) {
+              filteredStatuses.push(el[1]);
+            }
+            return filteredStatuses.indexOf(campaign[this.selectedSort]) >= 0;
+          default:
+            return campaign['text'].toLowerCase().includes(this.searchQuery.toLowerCase());
         }
       });
     }

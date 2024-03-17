@@ -57,7 +57,7 @@
         <my-button
             v-on:click="runLaunchCampaign"
         >
-          Оплатить и запустить рассылку
+          Запустить рассылку
         </my-button>
         <my-button
             v-on:click="runDeleteCampaign"
@@ -74,11 +74,29 @@
         <div v-show="showCanceled" class="deleted">
           {{ deleteMessage }}
         </div>
+        <div v-show="showPaid" class="paid">
+          <my-date
+              v-if="paymentDate"
+              v-bind:date="paymentDate"
+          />
+          <div>номер счета: {{ invoiceNumber }}</div>
+          <div>статус: {{ invoiceStatus }}</div>
+        </div>
+        <div v-show="showProcessing" class="processing">
+          <div>номер счета: {{ invoiceNumber }}</div>
+          <div>статус: {{ invoiceStatus }}</div>
+        </div>
         <my-button
             v-show="showCancelBttn"
             v-on:click="runCancelCampaign"
         >
           Отменить рассылку
+        </my-button>
+        <my-button
+            v-show="showPayBttn"
+            v-on:click="runPayCampaign"
+        >
+          Оплатить счет
         </my-button>
       </div>
     </form>
@@ -94,8 +112,9 @@ import {
   REFRESH_ACTION,
 } from "@/store/storeConstants";
 import MyButton from "@/components/UI/MyButton";
+import MyDate from "@/components/UI/MyDate";
 export default {
-  components: { MyButton },
+  components: {MyDate, MyButton },
   props: {
     campaign: {
       type: Object,
@@ -121,8 +140,15 @@ export default {
       oldText: '',
       campaignScheduled: true,
       showDeleted: false,
-      showCancelBttn: false,
       showCanceled: false,
+      showProcessing: false,
+      showPaid: false,
+      showCancelBttn: false,
+      showPayBttn: false,
+      stripe: '',
+      paymentDate: '',
+      invoiceNumber: '',
+      invoiceStatus: '',
       deleteMessage: '',
       success: '',
       failure: '',
@@ -134,6 +160,12 @@ export default {
         {value: 'tele2', name: 'Теле2'},
         {value: 'yota', name: 'Йота'}
       ],
+      invoiceStatuses: {
+        open: 'ожидает оплаты',
+        processing: 'в обработке',
+        paid: 'оплачен',
+        void: 'отменен'
+      }
     }
   },
   methods: {
@@ -145,7 +177,7 @@ export default {
     }),
     async launchCampaign() {
       this.success = this.failure = '';
-      if (confirm("Подтвердите оплату услуги по рассылке сообщений.")) {
+      if (confirm("После завершения рассылки Вам будет выставлен счет на сумму $10. Вы согласны?")) {
         this.showLoading(true);
         try {
           await axiosInstance.post(`http://127.0.0.1:8000/api/campaigns/${this.$props.campaign.id}/launch/`).then((response) => {
@@ -176,6 +208,36 @@ export default {
     async runLaunchCampaign() {
       do {
         await this.launchCampaign();
+      } while (this.isRefreshed);
+    },
+    async payCampaign() {
+      if (confirm("Перейти на страницу оплаты счета?")) {
+        this.showLoading(true);
+        try {
+          await axiosInstance.get(`http://127.0.0.1:8000/api/campaigns/${this.$props.campaign.id}/checkout/`).then((response) => {
+            this.showLoading(false);
+            this.isRefreshed = false;
+            return this.stripe.redirectToCheckout({sessionId: response.data.session_id})
+          });
+        } catch (e) {
+          if (typeof e.response !== "undefined" && e.response.status === 401 && !this.isRefreshed) {
+            try {
+              await this.getRefresh();
+              this.isRefreshed = true;
+            } catch (err) {
+              this.showLoading(false);
+              this.$router.replace('/login');
+            }
+          } else {
+            this.showLoading(false);
+            this.$router.replace('/error');
+          }
+        }
+      }
+    },
+    async runPayCampaign() {
+      do {
+        await this.payCampaign();
       } while (this.isRefreshed);
     },
     async cancelCampaign() {
@@ -332,6 +394,11 @@ export default {
         await this.updateCampaign();
       } while (this.isRefreshed);
     },
+    async getStripePublishableKey() {
+      fetch('http://127.0.0.1:8000/api/config/')
+          .then((result) => result.json())
+          .then((data) => this.stripe = Stripe(data.publishable_key))
+    },
     async getCampaignProp() {
       let campaign = this.$props.campaign;
       if (campaign.start_at !== undefined) {
@@ -350,6 +417,22 @@ export default {
         this.showCancelBttn = (
             (campaign.status === 'scheduled' && campaign.confirmed_at !== null) || campaign.status === 'launched'
         );
+        this.showPayBttn = campaign.status === 'finished' && campaign.invoice_data === null;
+        if (this.showPayBttn) {
+          await this.getStripePublishableKey();
+        }
+        if (campaign.status === 'finished' && campaign.invoice_data !== null) {
+          if (campaign.invoice_data.invoice_status === 'paid') {
+            this.showPaid = true;
+            this.paymentDate = campaign.paid_at;
+            this.invoiceNumber = campaign.invoice_data.invoice_number;
+            this.invoiceStatus = this.invoiceStatuses[campaign.invoice_data.invoice_status];
+          } else if (campaign.invoice_data.invoice_status === 'processing') {
+            this.showProcessing = true;
+            this.invoiceNumber = campaign.invoice_data.invoice_number;
+            this.invoiceStatus = this.invoiceStatuses[campaign.invoice_data.invoice_status];
+          }
+        }
       } else {
         await this.watchCampaignProp();
       }
@@ -385,5 +468,21 @@ export default {
   border: 1px solid black;
   max-width: 200px;
   margin: auto;
+}
+.paid {
+  margin-top: 10px;
+  padding: 5px;
+  outline-color: black;
+  border: 1px solid darkseagreen;
+  color: darkolivegreen;
+  text-align: center;
+}
+.processing {
+  margin-top: 10px;
+  padding: 5px;
+  outline-color: black;
+  border: 1px solid blue;
+  color: blue;
+  text-align: center;
 }
 </style>

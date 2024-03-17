@@ -12,6 +12,7 @@ import CampaignDetailsPage from "@/pages/CampaignDetailsPage";
 import CampaignControlsPage from "@/pages/CampaignControlsPage";
 import AddCampaignPage from "@/pages/AddCampaignPage";
 import AddCustomerPage from "@/pages/AddCustomerPage";
+import CheckoutResultPage from "@/pages/CheckoutResultPage";
 
 const routes = [
     {
@@ -76,6 +77,10 @@ const routes = [
         path: '/customers/add',
         component: AddCustomerPage,
         meta: { loggedIn: true }
+    },
+    {
+        path: '/checkout/:id/:result',
+        component: CheckoutResultPage
     }
 ]
 
