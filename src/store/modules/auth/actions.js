@@ -64,7 +64,7 @@ export default {
             }
         } catch (e) {
             if (e.response !== undefined) {
-                await context.dispatch(LOGOUT_ACTION);
+                await context.dispatch(AUTO_LOGOUT_ACTION);
                 throw e;
             }
         }
@@ -110,7 +110,24 @@ export default {
             }
         }
     },
-    [LOGOUT_ACTION](context) {
+    async [LOGOUT_ACTION](context) {
+        let logoutData = {
+            refresh: store.getters[`auth/${GET_USER_REFRESH_TOKEN_GETTER}`]
+        };
+        context.commit(SET_USER_TOKEN_DATA_MUTATION, {
+            email: null,
+            username: null,
+            accessToken: null,
+            refreshToken: null
+        });
+        localStorage.removeItem('userData');
+        try {
+            await axios.post('http://127.0.0.1:8000/api/accounts/logout', logoutData);
+        } catch (e) {
+            await router.replace('/error');
+        }
+    },
+    [AUTO_LOGOUT_ACTION](context) {
         context.commit(SET_USER_TOKEN_DATA_MUTATION, {
             email: null,
             username: null,
@@ -118,8 +135,5 @@ export default {
             refreshToken: null
         })
         localStorage.removeItem('userData');
-    },
-    [AUTO_LOGOUT_ACTION](context) {
-        context.dispatch(LOGOUT_ACTION);
     }
 };
