@@ -2,7 +2,7 @@
   <div>
     <form v-on:submit.prevent>
       <div v-if="welcome">{{ welcome }}</div>
-      <h4>Регистрация</h4>
+      <h4>Регистрация c $DOLLAR SERVICE$</h4>
       <my-input
           v-bind:value="username"
           v-on:input="username = $event.target.value.trim()"

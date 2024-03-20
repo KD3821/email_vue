@@ -16,6 +16,6 @@ export default {
         return state.refreshToken
     },
     [GET_USER_NAME]: (state) => {
-        return state.username
+        return state.email
     }
 };

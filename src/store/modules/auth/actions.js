@@ -13,13 +13,13 @@ import {
     SET_USER_TOKEN_DATA_MUTATION,
     GET_USER_REFRESH_TOKEN_GETTER,
     LOADING_SPINNER_SHOW_MUTATION,
+    GET_USER_NAME,
 } from "@/store/storeConstants";
 import store from "@/store/store";
 
 export default {
     async [SIGNUP_ACTION](context, payload) {
         let postData = {
-            username: payload.username,
             email: payload.email,
             password: payload.password,
         };
@@ -54,7 +54,6 @@ export default {
                     let userData = JSON.parse(oldUserData)
                     let newUserData = {
                         email: userData.email,
-                        username: userData.username,
                         refreshToken: userData.refreshToken,
                         accessToken: response.data.access
                     }
@@ -94,7 +93,6 @@ export default {
             if  (response.status === 200) {
                 let tokenData = {
                     email: response.data.email,
-                    username: response.data.username,
                     accessToken: response.data.tokens.access,
                     refreshToken: response.data.tokens.refresh
                 }
@@ -110,14 +108,22 @@ export default {
             }
         }
     },
-    [LOGOUT_ACTION](context) {
-        context.commit(SET_USER_TOKEN_DATA_MUTATION, {
-            email: null,
-            username: null,
-            accessToken: null,
-            refreshToken: null
-        })
-        localStorage.removeItem('userData');
+    async [LOGOUT_ACTION](context) {
+        let logoutData = {
+            email: store.getters[`auth/${GET_USER_NAME}`],
+            refresh: store.getters[`auth/${GET_USER_REFRESH_TOKEN_GETTER}`]
+        };
+        try {
+            await axios.post('http://127.0.0.1:8000/api/accounts/logout', logoutData);
+            context.commit(SET_USER_TOKEN_DATA_MUTATION, {
+                email: null,
+                accessToken: null,
+                refreshToken: null
+            });
+            localStorage.removeItem('userData');
+        } catch (e) {
+            await router.replace('/error');
+        }
     },
     [AUTO_LOGOUT_ACTION](context) {
         context.dispatch(LOGOUT_ACTION);
