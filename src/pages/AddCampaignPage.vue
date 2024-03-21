@@ -69,7 +69,7 @@ export default {
       finishTime: '',
       finishDate: '',
       selectedCarrier: '',
-      tag: '',
+      tag: null,
       text: '',
       success: '',
       failure: '',
@@ -96,7 +96,7 @@ export default {
         finish_at: `${this.finishDate}T${this.finishTime}:00+03:00`,
         text: this.text,
         params: {
-          'tag': this.tag,
+          'tag': this.tag === '' ? null : this.tag,
           'carrier': this.selectedCarrier,
         }
       };
