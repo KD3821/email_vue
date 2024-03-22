@@ -35,8 +35,8 @@
         <td>{{ stats.msg_total }}</td>
         <td>{{ stats.msg_ok }}</td>
         <td>{{ stats.msg_processing }}</td>
-        <td>{{ stats.msg_failed }}</td>
         <td>{{ stats.msg_canceled }}</td>
+        <td>{{ stats.msg_failed }}</td>
         <td>{{ stats.campaign_total }}</td>
       </tr>
     </table>

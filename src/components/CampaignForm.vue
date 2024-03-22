@@ -129,14 +129,14 @@ export default {
       finishTime: '',
       finishDate: '',
       selectedCarrier: '',
-      tag: '',
+      tag: null,
       text: '',
       oldStartTime: '',
       oldStartDate: '',
       oldFinishTime: '',
       oldFinishDate: '',
       oldSelectedCarrier: '',
-      oldTag: '',
+      oldTag: null,
       oldText: '',
       campaignScheduled: true,
       showDeleted: false,
@@ -324,7 +324,7 @@ export default {
         finish_at: `${this.finishDate}T${this.finishTime}:00+03:00`,
         text: this.text,
         params: {
-          'tag': this.tag,
+          'tag': this.tag === '' ? null : this.tag,
           'carrier': this.selectedCarrier,
         }
       };
@@ -333,8 +333,8 @@ export default {
           this.finishTime === this.oldFinishTime &&
           this.finishDate === this.oldFinishDate &&
           this.text === this.oldText &&
-          this.tag === this.oldTag &&
-          this.selectedCarrier === this.oldSelectedCarrier
+          this.selectedCarrier === this.oldSelectedCarrier &&
+          (this.tag === this.oldTag || (this.tag === '' && this.oldTag === null))
       ) {
         this.errors = {old: 'Данные не были изменены.'}
         this.failure = CreateCampaignValidations.getErrorMessageDetail(this.errors);
