@@ -5,7 +5,7 @@
   </div>
   <div v-else class="resultFailed">
     <img src="/payment-failure.jpg" alt="оплата не прошла" id="imgFailed">
-    Не удалось произвести оплату.
+    Не удалось произвести оплату счета: {{ invoiceNumber }}
   </div>
 </template>
 
@@ -25,7 +25,7 @@ export default {
     async processPayment() {
       let resultData = {
         campaign_id: this.campaignId,
-        result: this.result,
+        result: this.success,
       }
       try {
         await axios.post('http://127.0.0.1:8000/api/result/', resultData).then((response) => {
